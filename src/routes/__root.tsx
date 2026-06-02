@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import logoSvg from "../assets/Logo.svg?url";
 
 function NotFoundComponent() {
   return (
@@ -43,6 +44,11 @@ export const Route = createRootRoute({
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/77adfd2f-754a-4f42-a548-23ecc442ac61/id-preview-77cd161d--31c999b1-63ae-4695-9dc7-96cf31f24a86.lovable.app-1777648977693.png" },
     ],
     links: [
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: logoSvg,
+      },
       {
         rel: "stylesheet",
         href: appCss,
