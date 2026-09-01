@@ -1,45 +1,32 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { useReveal } from "@/hooks/use-reveal";
+import { getHomeCopy, getHomeMeta, type HomeCopy, type HomeLocale } from "@/lib/home-i18n";
 import wordmark from "@/assets/mitch-wordmark.png";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "MITCH OS — The pipeline that converts itself." },
-      {
-        name: "description",
-        content:
-          "MITCH OS is the thinking layer for outbound. Sourced dossier, decision-maker profile, trigger, and ready-to-send multichannel campaign for every account.",
-      },
-      { property: "og:title", content: "MITCH OS — The pipeline that converts itself." },
-      {
-        property: "og:description",
-        content:
-          "Outbound intelligence at any scale. A complete, sourced, ready-to-execute campaign for every account.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-  }),
-  component: MitchOSPage,
+  head: () => getHomeMeta("en"),
+  component: HomePageEn,
 });
 
-const NAV = [
-  { href: "#what", label: "What" },
-  { href: "#why", label: "Why" },
-  { href: "#how", label: "How" },
-  { href: "#go", label: "Go!" },
-];
+function HomePageEn() {
+  return <MitchOSPage locale="en" />;
+}
 
-function OSHeader() {
+function OSHeader({ locale, copy }: { locale: HomeLocale; copy: HomeCopy }) {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-[color:var(--warmwhite)]/85 border-b border-[color:var(--border)]">
       <div className="container-mitch flex items-center justify-between h-16 md:h-20">
-        <Link to="/" className="flex items-center" aria-label="MITCH OS home">
+        <Link
+          to={locale === "de" ? "/de" : "/"}
+          className="flex items-center"
+          aria-label="MITCH OS home"
+        >
           <img src={wordmark} alt="MITCH" className="h-10 md:h-12 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          {NAV.map((n) => (
+          {copy.nav.map((n) => (
             <a
               key={n.href}
               href={n.href}
@@ -50,12 +37,15 @@ function OSHeader() {
           ))}
         </nav>
 
-        <a
-          href="#go"
-          className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm"
-        >
-          Book a call <span aria-hidden>→</span>
-        </a>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher locale={locale} />
+          <a
+            href="#go"
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm"
+          >
+            {copy.headerCta} <span aria-hidden>→</span>
+          </a>
+        </div>
       </div>
     </header>
   );
@@ -87,7 +77,7 @@ function Reveal({
   );
 }
 
-function Hero() {
+function Hero({ copy }: { copy: HomeCopy }) {
   return (
     <section id="hero" className="relative overflow-hidden">
       <div
@@ -100,32 +90,38 @@ function Hero() {
       />
       <div className="container-mitch pt-16 pb-24 md:pt-28 md:pb-36">
         <Reveal as="p" className="eyebrow">
-          MITCH OS · The pipeline that converts itself
+          {copy.hero.kicker}
         </Reveal>
         <Reveal
           as="h1"
           className="mt-6 text-[clamp(2.25rem,6vw,5.25rem)] leading-[1.04] tracking-tight max-w-5xl"
         >
-          MITCH OS is the thinking layer for outbound.
+          {copy.hero.h1}
         </Reveal>
-
         <Reveal
           as="p"
-          className="mt-10 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-relaxed max-w-4xl italic font-display text-[color:var(--burnt)]"
+          className="mt-8 text-[clamp(1.125rem,2vw,1.5rem)] leading-relaxed max-w-4xl text-[color:var(--offblack)]/90"
+          delay={100}
+        >
+          {copy.hero.subHeadline}
+        </Reveal>
+        <Reveal
+          as="p"
+          className="mt-8 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-relaxed max-w-4xl italic font-display text-[color:var(--burnt)]"
           delay={150}
         >
-          Before your team reaches out, it builds a dossier on each account, creates a granular profile of decision makers, identifies current triggers and produces a multichannel campaign with ready to send content.
+          {copy.hero.body}
         </Reveal>
         <Reveal className="mt-10 grid gap-10 md:grid-cols-[1.4fr_1fr] items-end">
           <p className="text-lg md:text-xl leading-relaxed text-[color:var(--offblack)]/85 max-w-2xl">
-            For outbound sales teams and leaders, this is the new start line.
+            {copy.hero.tagline}
           </p>
           <div className="md:text-right">
             <a
               href="#go"
               className="inline-flex items-center gap-2 px-6 py-3.5 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm text-base font-medium"
             >
-              Book a call <span aria-hidden>→</span>
+              {copy.hero.cta} <span aria-hidden>→</span>
             </a>
           </div>
         </Reveal>
@@ -135,40 +131,15 @@ function Hero() {
   );
 }
 
-const DELIVERABLES = [
-  {
-    title: "The company as it is right now",
-    body: "Not only as their website describes it. What is driving the business, where it is heading, and why your offer is relevant.",
-  },
-  {
-    title: "Who controls the decision",
-    body: "What they say in public, how they frame the issues, and what motivates them as business people.",
-  },
-  {
-    title: "The trigger",
-    body: "The specific reason this company is timely to contact now, based on real events.",
-  },
-  {
-    title: "Campaign and content",
-    body: "A multichannel sequence built around a coordinated narrative, with touchpoints written for the specific person receiving them.",
-  },
-];
-
-function WhatSection() {
+function WhatSection({ copy }: { copy: HomeCopy }) {
   return (
     <section id="what" className="py-24 md:py-36">
       <div className="container-mitch">
         <Reveal>
-          <p className="eyebrow">01 — What</p>
-          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">
-            Good outbound depends on three things.
-          </h2>
+          <p className="eyebrow">{copy.what.eyebrow}</p>
+          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">{copy.what.headline}</h2>
           <ol className="mt-10 max-w-3xl divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
-            {[
-              "Knowing the account",
-              "Understanding the person",
-              "Choosing the right moment",
-            ].map((item, i) => (
+            {copy.what.listItems.map((item, i) => (
               <li
                 key={item}
                 className="flex items-baseline gap-6 py-5 text-[clamp(1.25rem,2.2vw,1.875rem)] font-display"
@@ -180,28 +151,21 @@ function WhatSection() {
               </li>
             ))}
           </ol>
-          <p className="mt-10 max-w-3xl text-[clamp(1.125rem,1.6vw,1.5rem)] leading-snug font-display italic text-[color:var(--burnt)]">
-            In practice, that work takes too long — so it gets skipped, approximated, or faked.
-          </p>
         </Reveal>
 
         <Reveal className="mt-12 text-[color:var(--offblack)]/85">
-          <p className="text-lg leading-relaxed max-w-4xl">
-            MITCH OS eliminates the manual research layer behind outbound sales. It continuously maps the current state of each target company, surfaces the most relevant stakeholders, detects actionable timing signals, and automatically assembles coordinated outreach sequences with tailored messaging for every channel.
-          </p>
+          <p className="text-lg leading-relaxed max-w-4xl">{copy.what.body}</p>
         </Reveal>
 
         <Reveal className="my-20 md:my-28 text-center">
           <p className="font-display italic text-[clamp(1.75rem,4.5vw,3.5rem)] leading-tight tracking-tight max-w-4xl mx-auto">
-            At <span className="text-[color:var(--burnt)]">20,000 accounts</span>, every single one
-            receives what a skilled analyst would give to{" "}
-            <span className="text-[color:var(--burnt)]">five</span>.
+            {copy.what.scaleLine}
           </p>
         </Reveal>
 
-        <p className="eyebrow mb-6">What MITCH OS gives you for every account</p>
+        <p className="eyebrow mb-6">{copy.what.deliverablesEyebrow}</p>
         <div className="grid gap-px bg-[color:var(--border)] md:grid-cols-2 border border-[color:var(--border)]">
-          {DELIVERABLES.map((d, i) => (
+          {copy.what.deliverables.map((d, i) => (
             <Reveal
               key={i}
               as="article"
@@ -221,22 +185,8 @@ function WhatSection() {
   );
 }
 
-const REASONS = [
-  {
-    title: "No variance",
-    body: "The intelligence applied to every account is identical in depth and rigour, whether your list has fifty names or fifty thousand.",
-  },
-  {
-    title: "No ramp-up",
-    body: "No hire, no training, no three-month wait. MITCH OS is operational from day one and knows your business within minutes of being briefed.",
-  },
-  {
-    title: "No ceiling",
-    body: "Your pipeline grows with your ambition. Add accounts. The system scales the thinking without scaling the cost.",
-  },
-];
-
-function WhySection() {
+function WhySection({ copy }: { copy: HomeCopy }) {
+  const { why } = copy;
   return (
     <section
       id="why"
@@ -245,31 +195,28 @@ function WhySection() {
       <div className="container-mitch">
         <Reveal>
           <p className="eyebrow" style={{ color: "var(--burnt)" }}>
-            02 — Why
+            {why.eyebrow}
           </p>
           <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl text-[color:var(--warmwhite)]">
-            Outbound has always forced a choice between quality and quantity.{" "}
-            <span className="italic font-display text-[color:var(--burnt)]">
-              That tension is over.
-            </span>
+            {why.headline}
           </h2>
           <div className="mt-10 grid gap-8 md:grid-cols-2 max-w-5xl text-[color:var(--warmwhite)]/80">
             <p className="text-lg leading-relaxed">
-              Reach more people, or reach them well. That tension was inevitable for as long as
-              intelligence required human time to produce. It no longer does.
+              {why.openingLead}
+              {why.openingStages.map((stage, i) => (
+                <span key={stage}>
+                  {i > 0 ? ", " : null}
+                  <strong className="font-semibold text-[color:var(--warmwhite)]">{stage}</strong>
+                </span>
+              ))}
+              {why.openingTail}
             </p>
-            <p className="text-lg leading-relaxed">
-              A human team cannot sustain research quality at volume. It gets skipped when the
-              queue is long, approximate when the deadline is tight, and inconsistent as the day
-              goes on. MITCH OS does not have these problems. The depth of intelligence at account
-              10,000 is identical to account one. The quality of output exceeds what a human team
-              produces even at low volume. Quantity, at that point, is simply irrelevant.
-            </p>
+            <p className="text-lg leading-relaxed">{why.paragraph2}</p>
           </div>
         </Reveal>
 
         <div className="mt-16 grid gap-px bg-[color:var(--warmwhite)]/10 md:grid-cols-3 border border-[color:var(--warmwhite)]/10">
-          {REASONS.map((r, i) => (
+          {why.cards.map((r, i) => (
             <Reveal
               key={i}
               as="article"
@@ -291,55 +238,24 @@ function WhySection() {
   );
 }
 
-const STEPS = [
-  {
-    n: "01",
-    title: "Investigation",
-    body: "The system profiles every account from public sources: structure, activity, recent developments, technology, and market position. This is the foundation everything else is built on.",
-  },
-  {
-    n: "02",
-    title: "Intel",
-    body: "From the investigation, MITCH OS extracts what matters for outreach: current priorities, the pressures the company is operating under, and the opportunities they have not yet acted on.",
-  },
-  {
-    n: "03",
-    title: "Triggers",
-    body: "The system identifies the specific events and signals that make this the right moment to reach out. Not a generic reason. A specific, sourced, verifiable one.",
-  },
-  {
-    n: "04",
-    title: "Campaign Structure",
-    body: "Based on the intelligence and the triggers, MITCH OS designs the outreach sequence: which channels, in which order, on which timeline, with which angle at each touchpoint.",
-  },
-  {
-    n: "05",
-    title: "Content",
-    body: "Every message for every touchpoint is written from the intelligence, with tone and style matched to the specific person receiving it. Ultra-specific to this company and this person, nothing templated, nothing approximate, ready to send.",
-  },
-];
-
-const FLOW = ["Investigation", "Intel", "Triggers", "Campaign Structure", "Content"];
-
-function HowSection() {
+function HowSection({ copy }: { copy: HomeCopy }) {
+  const { how } = copy;
   return (
     <section id="how" className="py-24 md:py-36">
       <div className="container-mitch">
         <Reveal>
-          <p className="eyebrow">03 — How</p>
-          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">
-            You provide the accounts.
-          </h2>
+          <p className="eyebrow">{how.eyebrow}</p>
+          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">{how.headline}</h2>
           <p className="mt-10 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-snug max-w-4xl italic font-display text-[color:var(--burnt)]">
-            MITCH OS builds the operational intelligence required to penetrate them — synthesizing company developments, stakeholder priorities, market signals, and commercial triggers into a fully structured outbound motion.
+            {how.opening}
           </p>
           <p className="mt-10 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-snug max-w-4xl italic font-display text-[color:var(--burnt)]">
-            Your sales organization gains aligned messaging, strategic timing, campaign coordination, and account-specific execution infrastructure before the first interaction even happens.
+            {how.paragraph2}
           </p>
         </Reveal>
 
         <ol className="mt-16 grid gap-px bg-[color:var(--border)] border border-[color:var(--border)]">
-          {STEPS.map((s, i) => (
+          {how.steps.map((s, i) => (
             <Reveal
               key={s.n}
               as="li"
@@ -350,7 +266,9 @@ function HowSection() {
                 <span className="font-display text-5xl md:text-6xl text-[color:var(--burnt)] leading-none">
                   {s.n}
                 </span>
-                <span className="eyebrow">Phase {i + 1}</span>
+                <span className="eyebrow">
+                  {how.phaseLabel} {i + 1}
+                </span>
               </div>
               <div>
                 <h3 className="font-display text-2xl md:text-3xl">{s.title}</h3>
@@ -364,18 +282,18 @@ function HowSection() {
 
         <Reveal className="mt-16 overflow-x-auto">
           <div className="flex items-center gap-3 min-w-max py-4">
-            {FLOW.map((step, i) => (
+            {how.flow.map((step, i) => (
               <div key={step} className="flex items-center gap-3">
                 <div
                   className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap border ${
-                    i === FLOW.length - 1
+                    i === how.flow.length - 1
                       ? "bg-[color:var(--burnt)] text-[color:var(--warmwhite)] border-[color:var(--burnt)]"
                       : "border-[color:var(--offblack)]/30 text-[color:var(--offblack)]"
                   }`}
                 >
                   {step}
                 </div>
-                {i < FLOW.length - 1 && (
+                {i < how.flow.length - 1 && (
                   <span aria-hidden className="text-[color:var(--muted-foreground)]">
                     ──→
                   </span>
@@ -386,44 +304,37 @@ function HowSection() {
         </Reveal>
 
         <Reveal className="mt-16 max-w-3xl">
-          <p className="font-display italic text-2xl md:text-3xl leading-snug">
-            Priced per account on a volume-based drawdown model.{" "}
-            <span className="text-[color:var(--burnt)]">
-              You use what you need, when you need it.
-            </span>
-          </p>
+          <p className="font-display italic text-2xl md:text-3xl leading-snug">{how.closingLine}</p>
         </Reveal>
-
       </div>
     </section>
   );
 }
 
-function ClosingSection() {
+function ClosingSection({ copy }: { copy: HomeCopy }) {
+  const { closing } = copy;
   return (
     <section id="go" className="py-24 md:py-36">
       <div className="container-mitch">
         <Reveal className="max-w-4xl">
-          <p className="eyebrow">04 — Get started</p>
+          <p className="eyebrow">{closing.eyebrow}</p>
           <h2 className="mt-5 text-[clamp(2.25rem,5.5vw,4.5rem)]">
-            Your team is built to close.{" "}
+            {closing.headlineLead}{" "}
             <span className="italic font-display text-[color:var(--burnt)]">
-              MITCH OS builds the ground they close on.
+              {closing.headlineAccent}
             </span>
           </h2>
           <p className="mt-8 text-lg md:text-xl text-[color:var(--offblack)]/80 max-w-2xl leading-relaxed">
-            Book a call and we will show you exactly what the output looks like on your accounts.
+            {closing.body}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <a
               href="mailto:vp@pearson-consulting.de?subject=MITCH%20OS%20—%20Book%20a%20call"
               className="inline-flex items-center gap-2 px-7 py-4 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm font-medium text-base"
             >
-              Book a call <span aria-hidden>→</span>
+              {closing.cta} <span aria-hidden>→</span>
             </a>
-            <p className="text-sm text-[color:var(--muted-foreground)]">
-              No pitch. No pressure. Just clarity.
-            </p>
+            <p className="text-sm text-[color:var(--muted-foreground)]">{closing.ctaNote}</p>
           </div>
         </Reveal>
       </div>
@@ -431,7 +342,8 @@ function ClosingSection() {
   );
 }
 
-function MitchOSFooter() {
+function MitchOSFooter({ copy }: { copy: HomeCopy }) {
+  const { footer } = copy;
   return (
     <footer className="border-t border-[color:var(--border)] mt-20 md:mt-32">
       <div className="container-mitch py-12 md:py-16 grid gap-10 md:grid-cols-4">
@@ -439,12 +351,10 @@ function MitchOSFooter() {
           <p className="font-display text-2xl tracking-tight">
             MITCH <span className="italic text-[color:var(--burnt)]">OS</span>
           </p>
-          <p className="mt-3 text-sm text-[color:var(--muted-foreground)] max-w-md">
-            The pipeline that converts itself. A MITCH company.
-          </p>
+          <p className="mt-3 text-sm text-[color:var(--muted-foreground)] max-w-md">{footer.tagline}</p>
         </div>
         <div className="text-sm space-y-2">
-          <p className="eyebrow mb-3">Company</p>
+          <p className="eyebrow mb-3">{footer.company}</p>
           <a
             href="mailto:info@mitchos.com"
             className="block text-[color:var(--muted-foreground)] hover:text-[color:var(--burnt)] transition-colors"
@@ -453,43 +363,44 @@ function MitchOSFooter() {
           </a>
         </div>
         <div className="text-sm space-y-2">
-          <p className="eyebrow mb-3">Legal</p>
+          <p className="eyebrow mb-3">{footer.legal}</p>
           <Link
             to="/legal-notice"
             className="block text-[color:var(--muted-foreground)] hover:text-[color:var(--burnt)] transition-colors"
           >
-            Legal Notice
+            {footer.legalNotice}
           </Link>
           <Link
             to="/privacy-policy"
             className="block text-[color:var(--muted-foreground)] hover:text-[color:var(--burnt)] transition-colors"
           >
-            Privacy Policy
+            {footer.privacyPolicy}
           </Link>
         </div>
       </div>
       <div className="border-t border-[color:var(--border)]">
         <div className="container-mitch py-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-[color:var(--muted-foreground)]">
-          <p>MITCH OS is a service by Pearson Consulting.</p>
-          <p>© {new Date().getFullYear()} — All rights reserved.</p>
+          <p>{footer.serviceBy}</p>
+          <p>© {new Date().getFullYear()} — {footer.rights}</p>
         </div>
       </div>
     </footer>
   );
 }
 
-function MitchOSPage() {
+export function MitchOSPage({ locale = "en" }: { locale?: HomeLocale }) {
+  const copy = getHomeCopy(locale);
   return (
     <div className="min-h-screen bg-[color:var(--background)]">
-      <OSHeader />
+      <OSHeader locale={locale} copy={copy} />
       <main>
-        <Hero />
-        <WhatSection />
-        <WhySection />
-        <HowSection />
-        <ClosingSection />
+        <Hero copy={copy} />
+        <WhatSection copy={copy} />
+        <WhySection copy={copy} />
+        <HowSection copy={copy} />
+        <ClosingSection copy={copy} />
       </main>
-      <MitchOSFooter />
+      <MitchOSFooter copy={copy} />
     </div>
   );
 }

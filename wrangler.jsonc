@@ -1,7 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "hey-mitch",
+  "name": "mitch-os",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mitch-os-db",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

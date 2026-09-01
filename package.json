@@ -10,7 +10,9 @@
     "preview": "node -e \"const fs=require('fs');const p='dist/server/index.js',t='dist/server/server.js';if(fs.existsSync(p))fs.copyFileSync(p,t);\" && vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "deploy:cf": "rm -rf .wrangler && npx wrangler deploy --cwd dist/server"
+    "deploy:cf": "rm -rf .wrangler && npx wrangler deploy --cwd dist/server",
+    "db:migrate:local": "wrangler d1 migrations apply mitch-os-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply mitch-os-db --remote"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
@@ -68,6 +70,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "^1.4.0",
     "@types/node": "^22.16.5",
@@ -83,6 +86,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "wrangler": "^4.87.0"
   }
 }

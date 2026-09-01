@@ -11,7 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LegalNoticeRouteImport } from './routes/legal-notice'
+import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeIndexRouteImport } from './routes/de/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as DeSlugRouteImport } from './routes/de/$slug'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
+import { Route as AdminPagesPageIdRouteImport } from './routes/admin/pages/$pageId'
 
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
@@ -23,40 +31,140 @@ const LegalNoticeRoute = LegalNoticeRouteImport.update({
   path: '/legal-notice',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeIndexRoute = DeIndexRouteImport.update({
+  id: '/de/',
+  path: '/de/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const DeSlugRoute = DeSlugRouteImport.update({
+  id: '/de/$slug',
+  path: '/de/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPagesPageIdRoute = AdminPagesPageIdRouteImport.update({
+  id: '/pages/$pageId',
+  path: '/pages/$pageId',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/$slug': typeof SlugRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/de/$slug': typeof DeSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/de/': typeof DeIndexRoute
+  '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/de/$slug': typeof DeSlugRoute
+  '/admin': typeof AdminIndexRoute
+  '/de': typeof DeIndexRoute
+  '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/users': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/$slug': typeof SlugRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/de/$slug': typeof DeSlugRoute
+  '/admin/': typeof AdminIndexRoute
+  '/de/': typeof DeIndexRoute
+  '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/legal-notice' | '/privacy-policy'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/$slug'
+    | '/legal-notice'
+    | '/privacy-policy'
+    | '/admin/login'
+    | '/de/$slug'
+    | '/admin/'
+    | '/de/'
+    | '/admin/pages/$pageId'
+    | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/legal-notice' | '/privacy-policy'
-  id: '__root__' | '/' | '/legal-notice' | '/privacy-policy'
+  to:
+    | '/'
+    | '/$slug'
+    | '/legal-notice'
+    | '/privacy-policy'
+    | '/admin/login'
+    | '/de/$slug'
+    | '/admin'
+    | '/de'
+    | '/admin/pages/$pageId'
+    | '/admin/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/$slug'
+    | '/legal-notice'
+    | '/privacy-policy'
+    | '/admin/login'
+    | '/de/$slug'
+    | '/admin/'
+    | '/de/'
+    | '/admin/pages/$pageId'
+    | '/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  SlugRoute: typeof SlugRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  DeSlugRoute: typeof DeSlugRoute
+  DeIndexRoute: typeof DeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +183,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalNoticeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +204,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/de/': {
+      id: '/de/'
+      path: '/de'
+      fullPath: '/de/'
+      preLoaderRoute: typeof DeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/de/$slug': {
+      id: '/de/$slug'
+      path: '/de/$slug'
+      fullPath: '/de/$slug'
+      preLoaderRoute: typeof DeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/pages/$pageId': {
+      id: '/admin/pages/$pageId'
+      path: '/pages/$pageId'
+      fullPath: '/admin/pages/$pageId'
+      preLoaderRoute: typeof AdminPagesPageIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminPagesPageIdRoute: typeof AdminPagesPageIdRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminPagesPageIdRoute: AdminPagesPageIdRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  SlugRoute: SlugRoute,
   LegalNoticeRoute: LegalNoticeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  DeSlugRoute: DeSlugRoute,
+  DeIndexRoute: DeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
