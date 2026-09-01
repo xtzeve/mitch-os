@@ -5,23 +5,29 @@ export interface CloudflareEnv {
   SESSION_SECRET?: string;
 }
 
-let cachedEnv: CloudflareEnv | null = null;
+declare global {
+  // eslint-disable-next-line no-var
+  var __mitchOsEnvPromise: Promise<CloudflareEnv> | undefined;
+}
 
-export async function getCloudflareEnv(): Promise<CloudflareEnv> {
-  if (cachedEnv) return cachedEnv;
-
+async function loadCloudflareEnv(): Promise<CloudflareEnv> {
   if (import.meta.env.DEV) {
     const { getPlatformProxy } = await import("wrangler");
     const proxy = await getPlatformProxy({
       configPath: "./wrangler.jsonc",
     });
-    cachedEnv = proxy.env as CloudflareEnv;
-    return cachedEnv;
+    return proxy.env as CloudflareEnv;
   }
 
   const { env } = await import("cloudflare:workers");
-  cachedEnv = env as CloudflareEnv;
-  return cachedEnv;
+  return env as CloudflareEnv;
+}
+
+export async function getCloudflareEnv(): Promise<CloudflareEnv> {
+  if (!globalThis.__mitchOsEnvPromise) {
+    globalThis.__mitchOsEnvPromise = loadCloudflareEnv();
+  }
+  return globalThis.__mitchOsEnvPromise;
 }
 
 export async function getDb() {

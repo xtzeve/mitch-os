@@ -46,9 +46,9 @@ export const landingUi = {
     pageTitle: "MITCH OS Preview",
   },
   de: {
-    stepWhy: "Warum Sie das sehen",
-    stepPreview: "Was Sie gleich sehen werden",
-    stepStructure: "Wie es aufgebaut ist",
+    stepWhy: "Warum Sie das hier sehen",
+    stepPreview: "Was Sie gleich sehen",
+    stepStructure: "So ist es aufgebaut",
     stepMechanism: "Warum das funktioniert",
     stepUnseen: "Was Sie noch nicht gesehen haben",
     mechanismIntro: "Die Phasen ändern sich nie.",
@@ -56,38 +56,38 @@ export const landingUi = {
     structureParts: [
       {
         num: "Teil 1",
-        title: "Overview",
+        title: "Übersicht",
         purpose:
-          "Wer das Unternehmen ist, in welchem Bereich es tätig ist und warum MITCH dieses Konto gerade jetzt als relevant identifiziert hat.",
+          "Wer das Unternehmen ist, in welchem Bereich es tätig ist und warum MITCH ihn gerade jetzt für vielversprechend hält.",
       },
       {
         num: "Teil 2",
-        title: "Triggers",
+        title: "Trigger",
         purpose:
-          "Datierte, öffentlich sichtbare Ereignisse — nicht ob das Konto passt, sondern warum jetzt der richtige Moment ist.",
+          "Datierte, öffentlich sichtbare Ereignisse — nicht ob der Account passt, sondern warum genau jetzt der richtige Zeitpunkt ist.",
       },
       {
         num: "Teil 3",
-        title: "Intel & Research Edge",
+        title: "Research & Intelligence",
         purpose:
-          "Die faktische Grundlage für jedes Gespräch: was das Unternehmen wirklich macht, wie das zu Ihrem Angebot passt und was eine oberflächliche Suche verpasst hätte.",
+          "Das faktische Fundament für jedes Gespräch: was das Unternehmen tatsächlich tut, wie sich das mit Ihrem Angebot deckt und was eine oberflächliche Recherche übersehen hätte.",
         includes:
-          "Company Intel · Focus-Area-Mapping · Research Edge — was geprüft, korrigiert oder ausgeschlossen wurde",
+          "Unternehmens-Intel · Themenfeld-Zuordnung · was geprüft, korrigiert oder ausgeschlossen wurde",
       },
       {
         num: "Teil 4",
-        title: "Campaign",
+        title: "Kampagne",
         purpose:
-          "Wie, über wen und mit welcher Begründung das Konto angesprochen wird — vom Erstkontakt bis zu einem Jahr Outreach.",
+          "Wie, über wen und mit welcher Begründung der Account angesprochen wird — vom Erstkontakt bis zu einem Jahr laufender Ansprache.",
         subhead: "Entscheider & Kanal",
         includes:
-          "Wen Sie erreichen und warum dieser Kanal — abgeleitet aus öffentlicher Rolle, Seniorität und Kommunikation des Unternehmens. Eine 12-Monats-Kampagne, einsatzbereit.",
+          "Wer angesprochen wird und warum genau dieser Kanal — abgeleitet aus öffentlicher Rolle, Seniorität und der eigenen Kommunikationsweise des Unternehmens. Eine vollständige 12-Monats-Kampagne.",
       },
     ],
     back: "← Zurück",
     next: "Weiter →",
     done: "Fertig",
-    pageTitle: "MITCH OS Preview",
+    pageTitle: "MITCH OS Vorschau",
   },
 } as const;
 

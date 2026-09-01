@@ -29,32 +29,35 @@ export const DEFAULT_PAGE_DESCRIPTION_EN: PageDescriptionFields = {
 };
 
 export const DEFAULT_PAGE_DESCRIPTION_DE: PageDescriptionFields = {
-  greeting: "Hallo [First Name], schön, dass du vorbeischaust.",
+  greeting: "Hallo [First Name], schön, dass Sie hier vorbeischauen.",
   why_body:
-    "Outbound hat immer eine Wahl erzwungen: mehr Menschen erreichen oder sie gut erreichen. Solange Intelligence Zeit einer Person brauchte, war diese Wahl unvermeidlich. MITCH hebt sie auf.",
-  why_claim: "Das ist die Pipeline, die sich selbst konvertiert.",
+    "Outbound-Vertrieb zwang schon immer zu einer Entscheidung zwischen Qualität und Quantität: mehr Menschen erreichen oder sie gut erreichen. Dieser Zielkonflikt war unvermeidlich, solange dafür menschliche Zeit nötig war. MITCH schafft diese Entscheidung ab.",
+  why_claim: "Das ist eine Pipeline, die sich selbst aufbaut.",
   preview_intro:
-    "Im Folgenden sehen Sie, was MITCH über Ihr Unternehmen erstellt — kein Mock-up, kein generischer Fülltext. Es arbeitet mit Ihrer öffentlichen Präsenz: Website, Positionierung, Menschen und jedem Signal, das jetzt handlungsrelevant ist.",
+    "Im Folgenden sehen Sie, was MITCH über Ihr Unternehmen erstellt — kein Mockup, keine generischen Füllinhalte. Er arbeitet mit Ihrem eigenen öffentlichen Auftritt: Ihrer Website, Ihrer Positionierung, Ihren Ansprechpartnern und jedem Signal, das jetzt einen Anruf wert ist.",
   four_thing_1:
-    "Analysiert Ihr Unternehmen — liest Website, Positionierung, USPs und andere relevante öffentliche Quellen inkl. Social Media und LinkedIn",
-  four_thing_2: "Mappt Ihr Wertversprechen — was Sie gerade wirklich unterscheidet",
-  four_thing_3: "Mappt die Struktur — Entscheider, Hierarchie, Unternehmenskultur",
-  four_thing_4: "Findet Intel und Trigger, die ein Konto jetzt ansprechbar machen",
+    "Analysiert Ihr Unternehmen — liest Ihre Website, Ihre Positionierung, Ihre USPs und alle weiteren relevanten öffentlichen Quellen, inkl. Social Media und LinkedIn",
+  four_thing_2:
+    "Versteht Ihr Leistungsversprechen — was Sie gerade wirklich von anderen unterscheidet",
+  four_thing_3: "Erstellt das Who's who — Struktur, Entscheider, Unternehmenskultur",
+  four_thing_4:
+    "Findet die Informationen und Anlässe, die einen Anruf jetzt sinnvoll machen",
   structure_intro:
-    "Jedes MITCH OS Account Dossier folgt derselben Form — vier Teile, in dieser Reihenfolge, jedes Mal. Was sich ändert, ist der Inhalt, nicht die Struktur.",
+    "Jedes MITCH OS Account-Dossier hat die gleiche Form — vier Teile, immer in dieser Reihenfolge. Was sich von Account zu Account ändert, ist der Inhalt, nicht die Struktur.",
   mechanism_p1:
-    "Jedes Konto muss sich Ihrer bewusst werden und verstehen, warum Sie relevant sind, bevor jemand verkaufen kann. Heute macht das ein Mensch von Hand — deshalb erreichen Sie nur so viele Konten, wie Sie Stunden haben. MITCH macht beides automatisch, für jedes Konto.",
+    "Jeder Account muss erst auf Sie aufmerksam werden und verstehen, warum Sie relevant sind, bevor überhaupt jemand verkaufen kann. Heute macht das ein Mensch von Hand — deshalb erreichen Sie nur so viele Accounts, wie Sie Stunden haben. MITCH übernimmt beides automatisch, für jeden Account.",
   mechanism_p2:
-    "Kaufen Sie Awareness und Comprehension bei MITCH — in Scale, in Qualität, zu Kosten, die vorher unmöglich waren. Ihre Leute arbeiten nur Conviction und Action.",
+    "MITCH übernimmt Awareness und Comprehension — in einem Umfang, einer Qualität und zu Kosten, die bisher nicht möglich waren. Ihr Team kümmert sich nur noch um Conviction und Action.",
   mechanism_p3:
-    "Bestehende Kunden nutzen MITCH bereits in großem Umfang — manche buchen Dossiers wie dieses in Tausenden, jedes so gründlich, jedes Mal ein anderes echtes Konto.",
+    "Bestehende Kunden nutzen MITCH bereits in großem Umfang — manche lassen Dossiers wie dieses bereits zu Tausenden erstellen, jedes genauso gründlich, jedes Mal für einen anderen echten Account.",
   unseen_p1:
-    "Sie haben die Struktur gesehen, nicht die Substanz. MITCH baut die vollständige Kampagne für Ihr Unternehmen: Research, Messaging, Anrufe, E-Mail, LinkedIn, Social und einen 12-Monats-Plan — maßgeschneidert für Ihren Markt und von Grund auf neu.",
-  unseen_p2: "Kein Limit bei Awareness und Comprehension. Für weniger, als Sie bereits ausgeben.",
+    "Was Sie gesehen haben, ist die Struktur, nicht der Inhalt. MITCH erstellt die vollständige Kampagne für Ihr Unternehmen: Recherche, Ansprache, Telefonate, E-Mail, LinkedIn, Social Media und einen 12-Monats-Ansprachplan — alles zugeschnitten auf Ihren Markt und von Grund auf neu erstellt.",
+  unseen_p2:
+    "Keine Grenze bei Awareness und Comprehension. Für weniger, als Sie ohnehin schon ausgeben.",
   cta_phone: "+00000000000",
   cta_label: "20 Minuten buchen",
   cta_alt:
-    "Wir gehen eine vollständige Kampagne durch, die speziell für Sie erstellt wurde. Die gesamten 12 Monate.",
+    "Wir gehen gemeinsam eine vollständige, speziell für Sie erstellte Kampagne durch. Alle 12 Monate.",
 };
 
 export const DEFAULT_DESCRIPTIONS_BY_LANGUAGE: Record<number, PageDescriptionFields> = {
