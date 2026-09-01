@@ -21,26 +21,42 @@ Default admin after migration: **username `admin`**, **password `admin`**. Creat
 
 ## Production (Cloudflare)
 
-Push to `main` deploys automatically via GitHub Actions (`.github/workflows/deploy.yml`).
+This repo is public — **no deploy secrets in GitHub**. Secrets live only in the Cloudflare dashboard (and locally in `.dev.vars`, which is gitignored).
 
-### One-time setup
+### Option A — Cloudflare Builds (recommended, no local terminal)
 
-1. **GitHub repository secrets** (Settings → Secrets and variables → Actions):
-   - `CLOUDFLARE_API_TOKEN` — API token with **Workers Scripts Edit** and **D1 Edit**
-   - `CLOUDFLARE_ACCOUNT_ID` — Cloudflare dashboard → Workers & Pages → right sidebar
+Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in Cloudflare, not in GitHub secrets.
 
-2. **Worker secret** (Cloudflare → mitch-os → Settings → Variables and Secrets):
-   - `SESSION_SECRET` — long random string (admin sessions). Set once; not stored in GitHub.
+1. **Cloudflare → Workers & Pages → mitch-os → Settings → Builds**
+2. Connect repository `xtzeve/mitch-os`, branch `main`
+3. Build settings:
+   - **Build command:** `npm ci && npm run build`
+   - **Deploy command:** `npx wrangler deploy` (root directory: `dist/server`, or set working directory to `dist/server`)
+4. **Bindings → D1:** variable `DB` → database `mitch-os-db`
+5. **Settings → Variables and Secrets:** add secret `SESSION_SECRET` (admin sessions)
+6. **D1 → mitch-os-db → Console:** run SQL from `migrations/0001_initial.sql` and `migrations/0002_admin_users.sql` if not applied yet
+7. Trigger **Create deployment** (or push to `main` if auto-build is enabled)
 
-3. **D1 database** — if `mitch-os-db` already exists on your Cloudflare account (it should for mitch-os.com), nothing to create. Each deploy runs pending migrations from `migrations/` automatically.
+Add your D1 **Database ID** to `wrangler.jsonc` (not a secret — safe to commit):
 
-### Manual deploy (optional)
+```jsonc
+"database_id": "paste-uuid-from-cloudflare-d1-dashboard"
+```
+
+### Option B — Manual deploy (Wrangler on your machine)
 
 ```bash
+npx wrangler login
+# add database_id to wrangler.jsonc first (see above)
 npm run build && npm run deploy:cf
 npm run db:migrate:remote
 npx wrangler secret put SESSION_SECRET --cwd dist/server
 ```
+
+### GitHub Actions in this repo
+
+Only **CI** (`.github/workflows/ci.yml`) — runs `npm run build` to verify the project compiles. **No secrets, no deploy.**
+
 
 ## URLs
 
