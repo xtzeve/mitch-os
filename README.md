@@ -25,7 +25,7 @@ This repo is public — **no deploy secrets in GitHub**. Secrets live only in th
 
 ### Option A — Cloudflare Builds (recommended, no local terminal)
 
-Build command: `npm ci && npm run build` · Deploy command: `npx wrangler deploy --cwd dist/server`
+Build command: `npm ci && npm run build` · Deploy command: `npm run deploy:cf` (or `rm -rf .wrangler && npx wrangler deploy --cwd dist/server`)
 
 Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in Cloudflare, not in GitHub secrets.
 
@@ -33,7 +33,7 @@ Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in C
 2. Connect repository `xtzeve/mitch-os`, branch `main`
 3. Build settings:
    - **Build command:** `npm ci && npm run build`
-   - **Deploy command:** `npx wrangler deploy` (root directory: `dist/server`, or set working directory to `dist/server`)
+   - **Deploy command:** `npm run deploy:cf`
 4. **Bindings → D1:** variable `DB` → database `mitch-os`
 5. **Settings → Variables and Secrets:** add secret `SESSION_SECRET` (admin sessions)
 6. **D1 → mitch-os → Console:** run SQL from `migrations/0001_initial.sql` and `migrations/0002_admin_users.sql` if not applied yet
