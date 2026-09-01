@@ -1,1 +1,2 @@
-SESSION_SECRET=replace-with-a-long-random-string
+# Min 32 characters (required for session cookie encryption)
+SESSION_SECRET=replace-with-a-long-random-string-at-least-32-chars

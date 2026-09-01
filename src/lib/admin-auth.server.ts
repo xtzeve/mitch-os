@@ -10,10 +10,18 @@ import {
 } from "@tanstack/react-start/server";
 
 const SESSION_NAME = "mitch-admin-session";
+const DEV_SESSION_SECRET = "dev-session-secret-change-me-32chars-min";
+const MIN_SESSION_SECRET_LENGTH = 32;
 
 async function sessionConfig() {
   const { SESSION_SECRET } = await getCloudflareEnv();
-  const password = SESSION_SECRET ?? "dev-session-secret-change-me";
+  const password = SESSION_SECRET ?? (import.meta.env.DEV ? DEV_SESSION_SECRET : "");
+  if (password.length < MIN_SESSION_SECRET_LENGTH) {
+    throw new Error(
+      "SESSION_SECRET is missing or too short (min 32 characters). " +
+        "Set it as an encrypted secret: npx wrangler secret put SESSION_SECRET --cwd dist/server",
+    );
+  }
   const requestUrl = getRequest()?.url;
   const isHttps = requestUrl ? new URL(requestUrl).protocol === "https:" : false;
   return {
