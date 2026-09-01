@@ -5,12 +5,20 @@ export interface CloudflareEnv {
   SESSION_SECRET?: string;
 }
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __mitchOsEnvPromise: Promise<CloudflareEnv> | undefined;
+interface EnvStorage {
+  getStore(): CloudflareEnv | undefined;
+}
+
+let envStorage: EnvStorage | undefined;
+
+export function bindCloudflareEnvStorage(storage: EnvStorage) {
+  envStorage = storage;
 }
 
 async function loadCloudflareEnv(): Promise<CloudflareEnv> {
+  const stored = envStorage?.getStore();
+  if (stored) return stored;
+
   if (import.meta.env.DEV) {
     const { getPlatformProxy } = await import("wrangler");
     const proxy = await getPlatformProxy({
@@ -19,20 +27,17 @@ async function loadCloudflareEnv(): Promise<CloudflareEnv> {
     return proxy.env as CloudflareEnv;
   }
 
-  const { env } = await import("cloudflare:workers");
-  return env as CloudflareEnv;
+  throw new Error("Cloudflare env is not available in this request context.");
 }
 
 export async function getCloudflareEnv(): Promise<CloudflareEnv> {
-  if (!globalThis.__mitchOsEnvPromise) {
-    globalThis.__mitchOsEnvPromise = loadCloudflareEnv();
-  }
-  return globalThis.__mitchOsEnvPromise;
+  return loadCloudflareEnv();
 }
 
 export async function getDb() {
   const { DB } = await getCloudflareEnv();
   if (!DB) {
+    console.error("D1 binding DB is missing from worker env");
     throw new Error("D1 binding DB is not configured. Check wrangler.jsonc d1_databases.");
   }
   return DB;

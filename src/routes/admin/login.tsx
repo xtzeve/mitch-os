@@ -34,8 +34,8 @@ function AdminLoginPage() {
               return;
             }
             await navigate({ to: "/admin" });
-          } catch {
-            setError("Login failed.");
+          } catch (error) {
+            setError(error instanceof Error ? error.message : "Login failed.");
           } finally {
             setLoading(false);
           }

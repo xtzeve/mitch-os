@@ -75,12 +75,19 @@ export const deletePageAction = createServerFn({ method: "POST" })
 export const adminLoginAction = createServerFn({ method: "POST" })
   .inputValidator((data: { username: string; password: string }) => data)
   .handler(async ({ data }) => {
-    const ok = await loginAdmin(data.username, data.password);
-    if (!ok) {
-      setResponseStatus(401);
-      return { success: false, error: "Invalid username or password." };
+    try {
+      const ok = await loginAdmin(data.username, data.password);
+      if (!ok) {
+        return { success: false, error: "Invalid username or password." };
+      }
+      return { success: true };
+    } catch (error) {
+      console.error("adminLoginAction failed:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Login failed.",
+      };
     }
-    return { success: true };
   });
 
 export const adminLogoutAction = createServerFn({ method: "POST" }).handler(async () => {

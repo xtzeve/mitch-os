@@ -3,7 +3,7 @@
   "name": "mitch-os",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "./src/worker.ts",
   "d1_databases": [
     {
       "binding": "DB",
@@ -11,5 +11,12 @@
       "database_id": "566df7c2-64f1-45a1-8ebb-5e294b14c509",
       "migrations_dir": "migrations"
     }
-  ]
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "invocation_logs": true,
+      "head_sampling_rate": 1
+    }
+  }
 }

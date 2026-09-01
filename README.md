@@ -35,7 +35,7 @@ Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in C
    - **Build command:** `npm ci && npm run build`
    - **Deploy command:** `npm run deploy:cf`
 4. **Bindings → D1:** variable `DB` → database `mitch-os`
-5. **Settings → Variables and Secrets:** add secret `SESSION_SECRET` (admin sessions)
+5. **Settings → Variables and Secrets** (not Bindings): add secret `SESSION_SECRET` (admin sessions)
 6. **D1 → mitch-os → Console:** run SQL from `migrations/0001_initial.sql` and `migrations/0002_admin_users.sql` if not applied yet
 7. Trigger **Create deployment** (or push to `main` if auto-build is enabled)
 
