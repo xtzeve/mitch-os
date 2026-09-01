@@ -25,6 +25,8 @@ This repo is public — **no deploy secrets in GitHub**. Secrets live only in th
 
 ### Option A — Cloudflare Builds (recommended, no local terminal)
 
+Build command: `npm ci && npm run build` · Deploy command: `npx wrangler deploy --cwd dist/server`
+
 Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in Cloudflare, not in GitHub secrets.
 
 1. **Cloudflare → Workers & Pages → mitch-os → Settings → Builds**
