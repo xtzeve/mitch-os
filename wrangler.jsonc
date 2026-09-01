@@ -7,7 +7,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "mitch-os-db",
+      "database_name": "mitch-os",
+      "database_id": "566df7c2-64f1-45a1-8ebb-5e294b14c509",
       "migrations_dir": "migrations"
     }
   ]

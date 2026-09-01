@@ -32,9 +32,9 @@ Uses GitHub only as source code. Cloudflare connects via OAuth; tokens stay in C
 3. Build settings:
    - **Build command:** `npm ci && npm run build`
    - **Deploy command:** `npx wrangler deploy` (root directory: `dist/server`, or set working directory to `dist/server`)
-4. **Bindings → D1:** variable `DB` → database `mitch-os-db`
+4. **Bindings → D1:** variable `DB` → database `mitch-os`
 5. **Settings → Variables and Secrets:** add secret `SESSION_SECRET` (admin sessions)
-6. **D1 → mitch-os-db → Console:** run SQL from `migrations/0001_initial.sql` and `migrations/0002_admin_users.sql` if not applied yet
+6. **D1 → mitch-os → Console:** run SQL from `migrations/0001_initial.sql` and `migrations/0002_admin_users.sql` if not applied yet
 7. Trigger **Create deployment** (or push to `main` if auto-build is enabled)
 
 Add your D1 **Database ID** to `wrangler.jsonc` (not a secret — safe to commit):

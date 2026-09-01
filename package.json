@@ -11,8 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "deploy:cf": "rm -rf .wrangler && npx wrangler deploy --cwd dist/server",
-    "db:migrate:local": "wrangler d1 migrations apply mitch-os-db --local",
-    "db:migrate:remote": "wrangler d1 migrations apply mitch-os-db --remote"
+    "db:migrate:local": "wrangler d1 migrations apply mitch-os --local",
+    "db:migrate:remote": "wrangler d1 migrations apply mitch-os --remote"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
