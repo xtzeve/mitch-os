@@ -1,4 +1,5 @@
 import type { LandingLocale } from "@/lib/landing-i18n";
+import { absoluteSiteUrl, buildShareMeta } from "@/lib/site-meta";
 
 export type HomeLocale = LandingLocale;
 
@@ -353,15 +354,14 @@ export function getHomeCopy(locale: HomeLocale): HomeCopy {
   return homeCopy[locale];
 }
 
-export function getHomeMeta(locale: HomeLocale) {
+export function getHomeMeta(locale: HomeLocale, shareImageUrl?: string) {
   const { meta } = getHomeCopy(locale);
+  const image = shareImageUrl ? absoluteSiteUrl(shareImageUrl) : undefined;
   return {
-    meta: [
-      { title: meta.title },
-      { name: "description", content: meta.description },
-      { property: "og:title", content: meta.ogTitle },
-      { property: "og:description", content: meta.ogDescription },
-      { property: "og:type", content: "website" },
-    ],
+    meta: buildShareMeta({
+      title: meta.title,
+      description: meta.description,
+      image,
+    }),
   };
 }

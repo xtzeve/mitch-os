@@ -1,4 +1,19 @@
+import { buildShareMeta } from "@/lib/site-meta";
+
 export type LandingLocale = "en" | "de";
+
+const landingShareMeta = {
+  en: {
+    title: "MITCH OS — The pipeline that converts itself.",
+    description:
+      "Outbound intelligence at any scale. A complete, sourced, ready-to-execute campaign for every account.",
+  },
+  de: {
+    title: "MITCH OS — Die Pipeline, die sich selbst konvertiert.",
+    description:
+      "Outbound Intelligence in jedem Maßstab. Eine vollständige, quellenbasierte, sofort einsetzbare Kampagne für jeden Account.",
+  },
+} as const;
 
 export const landingUi = {
   en: {
@@ -105,4 +120,15 @@ export function languageIdToLocale(languageId: number): LandingLocale {
 
 export function localeToLanguageId(locale: LandingLocale): number {
   return locale === "de" ? 2 : 1;
+}
+
+export function getLandingShareMeta(locale: LandingLocale, imageUrl?: string) {
+  const { title, description } = landingShareMeta[locale];
+
+  return buildShareMeta({
+    title,
+    description,
+    image: imageUrl,
+    robots: "noindex, nofollow",
+  });
 }

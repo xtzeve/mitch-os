@@ -7,7 +7,7 @@ import { getHomeCopy, getHomeMeta, type HomeCopy, type HomeLocale } from "@/lib/
 import wordmark from "@/assets/mitch-wordmark.png";
 
 export const Route = createFileRoute("/")({
-  head: () => getHomeMeta("en"),
+  head: () => getHomeMeta("en", wordmark),
   component: HomePageEn,
 });
 

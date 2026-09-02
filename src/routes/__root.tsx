@@ -30,18 +30,6 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Build a single-page, scrollable website for your AI solution with custom branding and integrated forms." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Build a single-page, scrollable website for your AI solution with custom branding and integrated forms." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "Build a single-page, scrollable website for your AI solution with custom branding and integrated forms." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/77adfd2f-754a-4f42-a548-23ecc442ac61/id-preview-77cd161d--31c999b1-63ae-4695-9dc7-96cf31f24a86.lovable.app-1777648977693.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/77adfd2f-754a-4f42-a548-23ecc442ac61/id-preview-77cd161d--31c999b1-63ae-4695-9dc7-96cf31f24a86.lovable.app-1777648977693.png" },
     ],
     links: [
       {
