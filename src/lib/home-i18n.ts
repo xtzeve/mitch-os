@@ -30,11 +30,11 @@ export type HomeCopy = {
   };
   why: {
     eyebrow: string;
+    kicker: string;
     headline: string;
-    openingLead: string;
-    openingStages: [string, string, string, string];
-    openingTail: string;
+    paragraph1: string;
     paragraph2: string;
+    caption: string;
     cards: { title: string; body: string }[];
   };
   how: {
@@ -121,13 +121,14 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     },
     why: {
       eyebrow: "02 — Why",
+      kicker: "The stages never change.",
       headline: "No limit on awareness and comprehension. For less than you're already spending.",
-      openingLead: "Every deal moves through four stages: ",
-      openingStages: ["awareness", "comprehension", "conviction", "action"],
-      openingTail:
-        ". The first two break under volume. Human teams cannot research and personalise thousands of accounts without quality falling. MITCH owns Awareness and Comprehension at scale—with the same depth of intelligence at account 50,000 as at account one. Your team starts at conviction, not cold.",
+      paragraph1:
+        "Every account has to become aware of you and understand why you matter before anyone can sell to them. Today, a person does that by hand — which is why you can only reach as many accounts as you have hours for. MITCH does both automatically, for every account, at the same depth at account one as at account fifty thousand.",
       paragraph2:
-        "Deploy MITCH to create Awareness and Comprehension at scale—better, faster and cheaper than building it internally. Every hour your reps aren't prospecting is an hour back on conviction and closing. The bar stays fixed; the cost doesn't grow with volume.",
+        "Buy Awareness and Comprehension from MITCH — at scale, at quality, at a cost never possible before. Your people work Conviction and Action only.",
+      caption:
+        "Existing clients already run MITCH at this volume — some book dossiers like this one by the thousand, on a different account every time.",
       cards: [
         {
           title: "No variance",
@@ -258,14 +259,15 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     },
     why: {
       eyebrow: "02 — Warum",
+      kicker: "Die Phasen ändern sich nie.",
       headline:
         "Keine Begrenzung bei Awareness und Comprehension. Für weniger, als Sie heute bereits ausgeben.",
-      openingLead: "Jeder Deal durchläuft vier Phasen: ",
-      openingStages: ["Awareness", "Comprehension", "Conviction", "Action"],
-      openingTail:
-        ". Die ersten beiden brechen unter hoher Skalierung zusammen. Menschliche Teams können nicht Tausende von Accounts recherchieren und personalisieren, ohne dass die Qualität sinkt. MITCH übernimmt Awareness und Comprehension in großem Maßstab — mit derselben Tiefe der Intelligence bei Account 50.000 wie bei Account eins. Ihr Team startet bei Conviction, nicht bei Kaltakquise.",
+      paragraph1:
+        "Jeder Account muss zunächst auf Sie aufmerksam werden und verstehen, warum Sie relevant sind, bevor überhaupt verkauft werden kann. Heute übernimmt das ein Mensch von Hand — deshalb erreichen Sie nur so viele Accounts, wie Sie Stunden dafür haben. MITCH erledigt beides automatisch, für jeden Account, mit derselben Tiefe bei Account eins wie bei Account 50.000.",
       paragraph2:
-        "Setzen Sie MITCH ein, um Awareness und Comprehension in großem Maßstab zu schaffen — besser, schneller und günstiger, als dies intern aufzubauen. Jede Stunde, die Ihre Vertriebsmitarbeiter nicht mit Prospecting verbringen, ist eine Stunde mehr für Conviction und Abschluss. Der Qualitätsmaßstab bleibt konstant; die Kosten steigen nicht mit dem Volumen.",
+        "Kaufen Sie Awareness und Comprehension von MITCH — in jedem Maßstab, in gleichbleibender Qualität, zu Kosten, die bisher nicht möglich waren. Ihr Team arbeitet nur noch an Conviction und Action.",
+      caption:
+        "Bestehende Kunden setzen MITCH bereits in diesem Umfang ein — einige erstellen Dossiers wie dieses zu Tausenden, jedes für einen anderen Account.",
       cards: [
         {
           title: "Keine Varianz",

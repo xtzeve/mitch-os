@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BookCallButton } from "@/components/book-call-button";
 import type { PageDescriptionFields } from "@/lib/page-types";
 import {
   getLandingUi,
@@ -200,9 +201,9 @@ export function LandingPage({ locale, content }: LandingPageProps) {
               <p className="step-note">{t(content.unseen_p1, firstName)}</p>
               <p className="step-note">{t(content.unseen_p2, firstName)}</p>
               <p style={{ marginTop: 20 }}>
-                <a className="cta-btn primary" href={`tel:${content.cta_phone}`}>
+                <BookCallButton className="cta-btn primary" type="button">
                   {t(content.cta_label, firstName)}
-                </a>
+                </BookCallButton>
                 <span className="cta-alt">{t(content.cta_alt, firstName)}</span>
               </p>
             </div>

@@ -12,10 +12,12 @@ Marketing site + personalized landing pages with admin panel.
 
 ```bash
 npm install
-cp .dev.vars.example .dev.vars   # set SESSION_SECRET
+cp .dev.vars.example .dev.vars   # set SESSION_SECRET (min 32 chars)
 npm run db:migrate:local
 npm run dev
 ```
+
+Local D1 lives in `.wrangler/`. If you see `no such table: page`, run `npm run db:migrate:local` again (happens after `npm run deploy:cf` or if `.wrangler` was deleted).
 
 Default admin after migration: **username `admin`**, **password `admin`**. Create your own account under `/admin/users` and delete the seed account when ready.
 

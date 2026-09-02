@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AccaMechanismBlock } from "@/components/acca-mechanism-block";
+import { BookCallButton } from "@/components/book-call-button";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useReveal } from "@/hooks/use-reveal";
 import { getHomeCopy, getHomeMeta, type HomeCopy, type HomeLocale } from "@/lib/home-i18n";
@@ -39,12 +41,9 @@ function OSHeader({ locale, copy }: { locale: HomeLocale; copy: HomeCopy }) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={locale} />
-          <a
-            href="#go"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm"
-          >
+          <BookCallButton className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm">
             {copy.headerCta} <span aria-hidden>→</span>
-          </a>
+          </BookCallButton>
         </div>
       </div>
     </header>
@@ -117,12 +116,9 @@ function Hero({ copy }: { copy: HomeCopy }) {
             {copy.hero.tagline}
           </p>
           <div className="md:text-right">
-            <a
-              href="#go"
-              className="inline-flex items-center gap-2 px-6 py-3.5 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm text-base font-medium"
-            >
+            <BookCallButton className="inline-flex items-center gap-2 px-6 py-3.5 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm text-base font-medium">
               {copy.hero.cta} <span aria-hidden>→</span>
-            </a>
+            </BookCallButton>
           </div>
         </Reveal>
       </div>
@@ -197,22 +193,19 @@ function WhySection({ copy }: { copy: HomeCopy }) {
           <p className="eyebrow" style={{ color: "var(--burnt)" }}>
             {why.eyebrow}
           </p>
+          <div className="mt-8">
+            <AccaMechanismBlock kicker={why.kicker} />
+          </div>
           <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl text-[color:var(--warmwhite)]">
             {why.headline}
           </h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-2 max-w-5xl text-[color:var(--warmwhite)]/80">
-            <p className="text-lg leading-relaxed">
-              {why.openingLead}
-              {why.openingStages.map((stage, i) => (
-                <span key={stage}>
-                  {i > 0 ? ", " : null}
-                  <strong className="font-semibold text-[color:var(--warmwhite)]">{stage}</strong>
-                </span>
-              ))}
-              {why.openingTail}
-            </p>
+          <div className="mt-10 grid max-w-5xl gap-8 text-[color:var(--warmwhite)]/80 md:grid-cols-2">
+            <p className="text-lg leading-relaxed">{why.paragraph1}</p>
             <p className="text-lg leading-relaxed">{why.paragraph2}</p>
           </div>
+          <p className="mt-8 max-w-3xl text-sm leading-relaxed text-[color:var(--warmwhite)]/55">
+            {why.caption}
+          </p>
         </Reveal>
 
         <div className="mt-16 grid gap-px bg-[color:var(--warmwhite)]/10 md:grid-cols-3 border border-[color:var(--warmwhite)]/10">
@@ -328,12 +321,9 @@ function ClosingSection({ copy }: { copy: HomeCopy }) {
             {closing.body}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <a
-              href="mailto:vp@pearson-consulting.de?subject=MITCH%20OS%20—%20Book%20a%20call"
-              className="inline-flex items-center gap-2 px-7 py-4 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm font-medium text-base"
-            >
+            <BookCallButton className="inline-flex items-center gap-2 px-7 py-4 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm font-medium text-base">
               {closing.cta} <span aria-hidden>→</span>
-            </a>
+            </BookCallButton>
             <p className="text-sm text-[color:var(--muted-foreground)]">{closing.ctaNote}</p>
           </div>
         </Reveal>

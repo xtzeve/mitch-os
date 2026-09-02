@@ -420,6 +420,13 @@
   border-radius: 3px;
 }
 
+.landing-page button.cta-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+}
+
 .landing-page .cta-btn.primary {
   background: var(--ink);
   color: var(--white);
