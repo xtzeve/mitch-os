@@ -28,6 +28,7 @@ export type PageRecord = {
   first_name: string;
   slug: string;
   status: number;
+  visited: number;
   date_added: string;
   date_modified: string;
 };
@@ -48,6 +49,9 @@ export const LANGUAGE_DE = 2;
 
 export const PAGE_STATUS_DRAFT = 0;
 export const PAGE_STATUS_PUBLISHED = 1;
+
+export const PAGE_LIST_PER_PAGE_OPTIONS = [10, 20, 50, 100] as const;
+export type PageListPerPage = (typeof PAGE_LIST_PER_PAGE_OPTIONS)[number];
 
 export const RESERVED_SLUGS = new Set([
   "admin",

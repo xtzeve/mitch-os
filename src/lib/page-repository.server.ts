@@ -10,9 +10,11 @@ import {
   LANGUAGE_DE,
   LANGUAGE_EN,
   PAGE_DESCRIPTION_COLUMNS,
+  PAGE_LIST_PER_PAGE_OPTIONS,
   PAGE_STATUS_DRAFT,
   type PageDescriptionRecord,
   type PageFormData,
+  type PageListPerPage,
   type PageRecord,
   type PageWithDescriptions,
 } from "@/lib/page-types";
@@ -48,6 +50,7 @@ function mapPage(row: Record<string, unknown>): PageRecord {
     first_name: String(row.first_name ?? ""),
     slug: String(row.slug ?? ""),
     status: Number(row.status ?? 0),
+    visited: Number(row.visited ?? 0),
     date_added: String(row.date_added ?? ""),
     date_modified: String(row.date_modified ?? ""),
   };
@@ -55,12 +58,63 @@ function mapPage(row: Record<string, unknown>): PageRecord {
 
 export { normalizeSlug, validateFirstName, validateSlug } from "@/lib/page-validation";
 
-export async function listPages(): Promise<PageRecord[]> {
+export type ListPagesParams = {
+  search?: string;
+  page?: number;
+  perPage?: number;
+};
+
+export type ListPagesResult = {
+  items: PageRecord[];
+  total: number;
+  page: number;
+  perPage: PageListPerPage;
+  totalPages: number;
+};
+
+function normalizePerPage(value: number | undefined): PageListPerPage {
+  return (PAGE_LIST_PER_PAGE_OPTIONS as readonly number[]).includes(value ?? -1)
+    ? (value as PageListPerPage)
+    : 20;
+}
+
+export async function listPages(params: ListPagesParams = {}): Promise<ListPagesResult> {
+  const search = (params.search ?? "").trim();
+  const perPage = normalizePerPage(params.perPage);
+  let page = Math.max(1, Math.floor(params.page ?? 1) || 1);
+
   const db = await getDb();
+  const like = `%${search}%`;
+  const where = search
+    ? "WHERE first_name LIKE ? COLLATE NOCASE OR slug LIKE ? COLLATE NOCASE"
+    : "";
+  const filterBinds = search ? [like, like] : [];
+
+  const countRow = await db
+    .prepare(`SELECT COUNT(*) AS total FROM page ${where}`)
+    .bind(...filterBinds)
+    .first<{ total: number }>();
+  const total = Number(countRow?.total ?? 0);
+  const totalPages = Math.max(1, Math.ceil(total / perPage) || 1);
+  if (page > totalPages) page = totalPages;
+  const offset = (page - 1) * perPage;
+
   const result = await db
-    .prepare("SELECT * FROM page ORDER BY date_modified DESC, page_id DESC")
+    .prepare(
+      `SELECT * FROM page ${where}
+       ORDER BY date_modified DESC, page_id DESC
+       LIMIT ? OFFSET ?`,
+    )
+    .bind(...filterBinds, perPage, offset)
     .all<PageRecord>();
-  return (result.results ?? []).map((row) => mapPage(row as unknown as Record<string, unknown>));
+
+  return {
+    items: (result.results ?? []).map((row) => mapPage(row as unknown as Record<string, unknown>)),
+    total,
+    page,
+    perPage,
+    totalPages,
+  };
 }
 
 export async function getPageById(pageId: number): Promise<PageWithDescriptions | null> {
@@ -107,6 +161,14 @@ export async function getPublishedPageBySlug(
     ...mapPage(record),
     ...mapDescription(record),
   };
+}
+
+export async function incrementPageVisited(pageId: number) {
+  const db = await getDb();
+  await db
+    .prepare("UPDATE page SET visited = visited + 1 WHERE page_id = ?")
+    .bind(pageId)
+    .run();
 }
 
 export async function isSlugTaken(slug: string, excludePageId?: number) {

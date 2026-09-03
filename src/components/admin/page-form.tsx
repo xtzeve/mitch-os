@@ -16,6 +16,7 @@ import {
 import { DEFAULT_PAGE_DESCRIPTION_EN } from "@/lib/page-defaults";
 import {
   hasPageGeneralFieldErrors,
+  normalizeSlug,
   validatePageGeneralFields,
   type PageGeneralFieldErrors,
 } from "@/lib/page-validation";
@@ -59,6 +60,7 @@ export function PageForm({ pageId, initialData, onSave, saving, error }: PageFor
   const [languageId, setLanguageId] = useState(LANGUAGE_EN);
   const [activeTab, setActiveTab] = useState("general");
   const [fieldErrors, setFieldErrors] = useState<PageGeneralFieldErrors>({});
+  const [slugManual, setSlugManual] = useState(Boolean(initialData.slug.trim()));
   const description =
     form.page_description[languageId] ??
     (languageId === LANGUAGE_DE
@@ -150,9 +152,18 @@ export function PageForm({ pageId, initialData, onSave, saving, error }: PageFor
                 id="first_name"
                 value={form.first_name}
                 onChange={(event) => {
-                  setForm({ ...form, first_name: event.target.value });
-                  if (fieldErrors.first_name) {
-                    setFieldErrors((current) => ({ ...current, first_name: undefined }));
+                  const firstName = event.target.value;
+                  setForm((current) => ({
+                    ...current,
+                    first_name: firstName,
+                    slug: slugManual ? current.slug : normalizeSlug(firstName),
+                  }));
+                  if (fieldErrors.first_name || (!slugManual && fieldErrors.slug)) {
+                    setFieldErrors((current) => ({
+                      ...current,
+                      first_name: undefined,
+                      ...(slugManual ? {} : { slug: undefined }),
+                    }));
                   }
                 }}
                 aria-invalid={Boolean(fieldErrors.first_name)}
@@ -169,12 +180,13 @@ export function PageForm({ pageId, initialData, onSave, saving, error }: PageFor
                 id="slug"
                 value={form.slug}
                 onChange={(event) => {
+                  setSlugManual(true);
                   setForm({ ...form, slug: event.target.value });
                   if (fieldErrors.slug) {
                     setFieldErrors((current) => ({ ...current, slug: undefined }));
                   }
                 }}
-                placeholder="alex"
+                placeholder="max-mueller"
                 aria-invalid={Boolean(fieldErrors.slug)}
               />
               {fieldErrors.slug ? (

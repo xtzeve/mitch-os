@@ -1,9 +1,17 @@
 import { RESERVED_SLUGS } from "@/lib/page-types";
 
+/** German (and similar) letters → ASCII for URL slugs. */
+function transliterateForSlug(value: string) {
+  return value
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss");
+}
+
 export function normalizeSlug(raw: string) {
-  return raw
-    .trim()
-    .toLowerCase()
+  return transliterateForSlug(raw.trim().toLowerCase())
+    .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");

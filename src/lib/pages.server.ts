@@ -5,6 +5,7 @@ import {
   deletePage,
   getPageById,
   getPublishedPageBySlug,
+  incrementPageVisited,
   listPages,
   pageToFormData,
   savePage,
@@ -30,13 +31,16 @@ export const fetchPublishedLanding = createServerFn({ method: "GET" })
       setResponseStatus(404);
       return null;
     }
+    await incrementPageVisited(page.page_id);
     return page;
   });
 
-export const fetchPages = createServerFn({ method: "GET" }).handler(async () => {
-  await requireAdmin();
-  return listPages();
-});
+export const fetchPages = createServerFn({ method: "GET" })
+  .inputValidator((data: { search?: string; page?: number; perPage?: number }) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    return listPages(data);
+  });
 
 export const fetchPage = createServerFn({ method: "GET" })
   .inputValidator((data: { pageId: number }) => data)
