@@ -63,6 +63,8 @@ export const fetchPages = createServerFn({ method: "GET" })
       campaignId?: number | null;
       publishedFrom?: string | null;
       publishedTo?: string | null;
+      sortBy?: string;
+      sortDir?: string;
     }) => data,
   )
   .handler(async ({ data }) => {

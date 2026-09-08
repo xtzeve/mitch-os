@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +19,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatPublishedDate, formatVisitedCell } from "@/lib/page-format";
-import { PAGE_LIST_PER_PAGE_OPTIONS, type PageListPerPage } from "@/lib/page-types";
+import {
+  PAGE_LIST_DEFAULT_SORT_BY,
+  PAGE_LIST_DEFAULT_SORT_DIR,
+  PAGE_LIST_PER_PAGE_OPTIONS,
+  PAGE_LIST_SORT_FIELDS,
+  type PageListPerPage,
+  type PageListSortDir,
+  type PageListSortField,
+} from "@/lib/page-types";
 import { deletePageAction, fetchPages } from "@/lib/pages.server";
+import { cn } from "@/lib/utils";
 
 const DEFAULT_PER_PAGE: PageListPerPage = 20;
 const ALL_VALUE = "__all__";
@@ -33,6 +43,8 @@ type PagesSearch = {
   campaignId?: number;
   publishedFrom?: string;
   publishedTo?: string;
+  sortBy?: PageListSortField;
+  sortDir?: PageListSortDir;
 };
 
 function normalizePerPage(value: unknown): PageListPerPage {
@@ -40,6 +52,16 @@ function normalizePerPage(value: unknown): PageListPerPage {
   return (PAGE_LIST_PER_PAGE_OPTIONS as readonly number[]).includes(n)
     ? (n as PageListPerPage)
     : DEFAULT_PER_PAGE;
+}
+
+function normalizeSortBy(value: unknown): PageListSortField {
+  return (PAGE_LIST_SORT_FIELDS as readonly string[]).includes(String(value))
+    ? (value as PageListSortField)
+    : PAGE_LIST_DEFAULT_SORT_BY;
+}
+
+function normalizeSortDir(value: unknown): PageListSortDir {
+  return value === "asc" || value === "desc" ? value : PAGE_LIST_DEFAULT_SORT_DIR;
 }
 
 function optionalPositiveInt(value: unknown): number | undefined {
@@ -51,6 +73,15 @@ function optionalDate(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
   const trimmed = value.trim().slice(0, 10);
   return /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? trimmed : undefined;
+}
+
+function sortSearchParams(sortBy: PageListSortField, sortDir: PageListSortDir) {
+  const isDefault =
+    sortBy === PAGE_LIST_DEFAULT_SORT_BY && sortDir === PAGE_LIST_DEFAULT_SORT_DIR;
+  return {
+    sortBy: isDefault ? undefined : sortBy,
+    sortDir: isDefault ? undefined : sortDir,
+  };
 }
 
 export const Route = createFileRoute("/admin/")({
@@ -74,6 +105,12 @@ export const Route = createFileRoute("/admin/")({
     if (publishedFrom) result.publishedFrom = publishedFrom;
     const publishedTo = optionalDate(search.publishedTo);
     if (publishedTo) result.publishedTo = publishedTo;
+    const sortBy = normalizeSortBy(search.sortBy);
+    const sortDir = normalizeSortDir(search.sortDir);
+    if (sortBy !== PAGE_LIST_DEFAULT_SORT_BY || sortDir !== PAGE_LIST_DEFAULT_SORT_DIR) {
+      result.sortBy = sortBy;
+      result.sortDir = sortDir;
+    }
     return result;
   },
   loaderDeps: ({ search }) => ({
@@ -85,6 +122,8 @@ export const Route = createFileRoute("/admin/")({
     campaignId: search.campaignId ?? null,
     publishedFrom: search.publishedFrom ?? null,
     publishedTo: search.publishedTo ?? null,
+    sortBy: search.sortBy ?? PAGE_LIST_DEFAULT_SORT_BY,
+    sortDir: search.sortDir ?? PAGE_LIST_DEFAULT_SORT_DIR,
   }),
   loader: async ({ deps }) => fetchPages({ data: deps }),
   component: AdminPagesList,
@@ -97,6 +136,8 @@ function AdminPagesList() {
     page,
     perPage,
     totalPages,
+    sortBy,
+    sortDir,
     territories,
     owners,
     campaigns,
@@ -129,6 +170,18 @@ function AdminPagesList() {
 
     return () => window.clearTimeout(timer);
   }, [navigate, query, searchInput]);
+
+  const toggleSort = (field: PageListSortField) => {
+    const nextDir: PageListSortDir =
+      sortBy === field ? (sortDir === "asc" ? "desc" : "asc") : "desc";
+    void navigate({
+      search: (prev) => ({
+        ...prev,
+        ...sortSearchParams(field, nextDir),
+        page: undefined,
+      }),
+    });
+  };
 
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
@@ -258,14 +311,32 @@ function AdminPagesList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
+              <SortableHead
+                label="ID"
+                field="id"
+                activeField={sortBy}
+                direction={sortDir}
+                onSort={toggleSort}
+              />
               <TableHead>First Name</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Territory</TableHead>
               <TableHead>Owner</TableHead>
               <TableHead>Campaign</TableHead>
-              <TableHead>Published</TableHead>
-              <TableHead>Visited</TableHead>
+              <SortableHead
+                label="Published"
+                field="published"
+                activeField={sortBy}
+                direction={sortDir}
+                onSort={toggleSort}
+              />
+              <SortableHead
+                label="Visited"
+                field="visited"
+                activeField={sortBy}
+                direction={sortDir}
+                onSort={toggleSort}
+              />
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -366,6 +437,39 @@ function AdminPagesList() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SortableHead({
+  label,
+  field,
+  activeField,
+  direction,
+  onSort,
+}: {
+  label: string;
+  field: PageListSortField;
+  activeField: PageListSortField;
+  direction: PageListSortDir;
+  onSort: (field: PageListSortField) => void;
+}) {
+  const active = activeField === field;
+  const Icon = !active ? ArrowUpDown : direction === "asc" ? ArrowUp : ArrowDown;
+
+  return (
+    <TableHead>
+      <button
+        type="button"
+        onClick={() => onSort(field)}
+        className={cn(
+          "inline-flex items-center gap-1 font-medium hover:text-foreground",
+          active ? "text-foreground" : "text-muted-foreground",
+        )}
+      >
+        {label}
+        <Icon className="h-3.5 w-3.5" />
+      </button>
+    </TableHead>
   );
 }
 

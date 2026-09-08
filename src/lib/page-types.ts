@@ -57,6 +57,13 @@ export const LANGUAGE_DE = 2;
 export const PAGE_LIST_PER_PAGE_OPTIONS = [10, 20, 50, 100] as const;
 export type PageListPerPage = (typeof PAGE_LIST_PER_PAGE_OPTIONS)[number];
 
+export const PAGE_LIST_SORT_FIELDS = ["id", "published", "visited"] as const;
+export type PageListSortField = (typeof PAGE_LIST_SORT_FIELDS)[number];
+export type PageListSortDir = "asc" | "desc";
+
+export const PAGE_LIST_DEFAULT_SORT_BY: PageListSortField = "visited";
+export const PAGE_LIST_DEFAULT_SORT_DIR: PageListSortDir = "desc";
+
 export const RESERVED_SLUGS = new Set([
   "admin",
   "de",

@@ -10,10 +10,15 @@ import {
   LANGUAGE_DE,
   LANGUAGE_EN,
   PAGE_DESCRIPTION_COLUMNS,
+  PAGE_LIST_DEFAULT_SORT_BY,
+  PAGE_LIST_DEFAULT_SORT_DIR,
   PAGE_LIST_PER_PAGE_OPTIONS,
+  PAGE_LIST_SORT_FIELDS,
   type PageDescriptionRecord,
   type PageFormData,
   type PageListPerPage,
+  type PageListSortDir,
+  type PageListSortField,
   type PageRecord,
   type PageWithDescriptions,
 } from "@/lib/page-types";
@@ -85,6 +90,8 @@ export type ListPagesParams = {
   campaignId?: number | null;
   publishedFrom?: string | null;
   publishedTo?: string | null;
+  sortBy?: PageListSortField;
+  sortDir?: PageListSortDir;
 };
 
 export type ListPagesResult = {
@@ -93,12 +100,37 @@ export type ListPagesResult = {
   page: number;
   perPage: PageListPerPage;
   totalPages: number;
+  sortBy: PageListSortField;
+  sortDir: PageListSortDir;
 };
 
 function normalizePerPage(value: number | undefined): PageListPerPage {
   return (PAGE_LIST_PER_PAGE_OPTIONS as readonly number[]).includes(value ?? -1)
     ? (value as PageListPerPage)
     : 20;
+}
+
+function normalizeSortBy(value: string | undefined): PageListSortField {
+  return (PAGE_LIST_SORT_FIELDS as readonly string[]).includes(value ?? "")
+    ? (value as PageListSortField)
+    : PAGE_LIST_DEFAULT_SORT_BY;
+}
+
+function normalizeSortDir(value: string | undefined): PageListSortDir {
+  return value === "asc" || value === "desc" ? value : PAGE_LIST_DEFAULT_SORT_DIR;
+}
+
+function orderByClause(sortBy: PageListSortField, sortDir: PageListSortDir): string {
+  const dir = sortDir === "asc" ? "ASC" : "DESC";
+  switch (sortBy) {
+    case "id":
+      return `p.page_id ${dir}`;
+    case "published":
+      return `(p.published IS NULL) ASC, date(p.published) ${dir}, p.page_id ${dir}`;
+    case "visited":
+    default:
+      return `p.visited ${dir}, (p.last_visited IS NULL) ASC, p.last_visited ${dir}, p.page_id ${dir}`;
+  }
 }
 
 function normalizeDateOnly(value: string | null | undefined): string | null {
@@ -116,6 +148,8 @@ export async function listPages(params: ListPagesParams = {}): Promise<ListPages
   const campaignId = nullableId(params.campaignId);
   const publishedFrom = normalizeDateOnly(params.publishedFrom);
   const publishedTo = normalizeDateOnly(params.publishedTo);
+  const sortBy = normalizeSortBy(params.sortBy);
+  const sortDir = normalizeSortDir(params.sortDir);
 
   const whereParts: string[] = [];
   const filterBinds: Array<string | number> = [];
@@ -172,7 +206,7 @@ export async function listPages(params: ListPagesParams = {}): Promise<ListPages
          c.name AS campaign_name
        ${fromJoin}
        ${where}
-       ORDER BY p.visited DESC, (p.last_visited IS NULL) ASC, p.last_visited DESC, p.page_id DESC
+       ORDER BY ${orderByClause(sortBy, sortDir)}
        LIMIT ? OFFSET ?`,
     )
     .bind(...filterBinds, perPage, offset)
@@ -184,6 +218,8 @@ export async function listPages(params: ListPagesParams = {}): Promise<ListPages
     page,
     perPage,
     totalPages,
+    sortBy,
+    sortDir,
   };
 }
 
