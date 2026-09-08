@@ -19,6 +19,10 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DeSlugRouteImport } from './routes/de/$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
+import { Route as AdminTerritoriesIndexRouteImport } from './routes/admin/territories/index'
+import { Route as AdminOwnersIndexRouteImport } from './routes/admin/owners/index'
+import { Route as AdminCampaignsIndexRouteImport } from './routes/admin/campaigns/index'
+import { Route as AdminPagesNewRouteImport } from './routes/admin/pages/new'
 import { Route as AdminPagesPageIdRouteImport } from './routes/admin/pages/$pageId'
 
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
@@ -71,6 +75,26 @@ const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminTerritoriesIndexRoute = AdminTerritoriesIndexRouteImport.update({
+  id: '/territories/',
+  path: '/territories/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminOwnersIndexRoute = AdminOwnersIndexRouteImport.update({
+  id: '/owners/',
+  path: '/owners/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCampaignsIndexRoute = AdminCampaignsIndexRouteImport.update({
+  id: '/campaigns/',
+  path: '/campaigns/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPagesNewRoute = AdminPagesNewRouteImport.update({
+  id: '/pages/new',
+  path: '/pages/new',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminPagesPageIdRoute = AdminPagesPageIdRouteImport.update({
   id: '/pages/$pageId',
   path: '/pages/$pageId',
@@ -88,6 +112,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/pages/new': typeof AdminPagesNewRoute
+  '/admin/campaigns/': typeof AdminCampaignsIndexRoute
+  '/admin/owners/': typeof AdminOwnersIndexRoute
+  '/admin/territories/': typeof AdminTerritoriesIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -100,6 +128,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/de': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/pages/new': typeof AdminPagesNewRoute
+  '/admin/campaigns': typeof AdminCampaignsIndexRoute
+  '/admin/owners': typeof AdminOwnersIndexRoute
+  '/admin/territories': typeof AdminTerritoriesIndexRoute
   '/admin/users': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -114,6 +146,10 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
+  '/admin/pages/new': typeof AdminPagesNewRoute
+  '/admin/campaigns/': typeof AdminCampaignsIndexRoute
+  '/admin/owners/': typeof AdminOwnersIndexRoute
+  '/admin/territories/': typeof AdminTerritoriesIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +165,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/de/'
     | '/admin/pages/$pageId'
+    | '/admin/pages/new'
+    | '/admin/campaigns/'
+    | '/admin/owners/'
+    | '/admin/territories/'
     | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -141,6 +181,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/de'
     | '/admin/pages/$pageId'
+    | '/admin/pages/new'
+    | '/admin/campaigns'
+    | '/admin/owners'
+    | '/admin/territories'
     | '/admin/users'
   id:
     | '__root__'
@@ -154,6 +198,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/de/'
     | '/admin/pages/$pageId'
+    | '/admin/pages/new'
+    | '/admin/campaigns/'
+    | '/admin/owners/'
+    | '/admin/territories/'
     | '/admin/users/'
   fileRoutesById: FileRoutesById
 }
@@ -239,6 +287,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/territories/': {
+      id: '/admin/territories/'
+      path: '/territories'
+      fullPath: '/admin/territories/'
+      preLoaderRoute: typeof AdminTerritoriesIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/owners/': {
+      id: '/admin/owners/'
+      path: '/owners'
+      fullPath: '/admin/owners/'
+      preLoaderRoute: typeof AdminOwnersIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/campaigns/': {
+      id: '/admin/campaigns/'
+      path: '/campaigns'
+      fullPath: '/admin/campaigns/'
+      preLoaderRoute: typeof AdminCampaignsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/pages/new': {
+      id: '/admin/pages/new'
+      path: '/pages/new'
+      fullPath: '/admin/pages/new'
+      preLoaderRoute: typeof AdminPagesNewRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/pages/$pageId': {
       id: '/admin/pages/$pageId'
       path: '/pages/$pageId'
@@ -253,6 +329,10 @@ interface AdminRouteRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminPagesPageIdRoute: typeof AdminPagesPageIdRoute
+  AdminPagesNewRoute: typeof AdminPagesNewRoute
+  AdminCampaignsIndexRoute: typeof AdminCampaignsIndexRoute
+  AdminOwnersIndexRoute: typeof AdminOwnersIndexRoute
+  AdminTerritoriesIndexRoute: typeof AdminTerritoriesIndexRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
@@ -260,6 +340,10 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminPagesPageIdRoute: AdminPagesPageIdRoute,
+  AdminPagesNewRoute: AdminPagesNewRoute,
+  AdminCampaignsIndexRoute: AdminCampaignsIndexRoute,
+  AdminOwnersIndexRoute: AdminOwnersIndexRoute,
+  AdminTerritoriesIndexRoute: AdminTerritoriesIndexRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 

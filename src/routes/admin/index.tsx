@@ -17,19 +17,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  PAGE_LIST_PER_PAGE_OPTIONS,
-  PAGE_STATUS_PUBLISHED,
-  type PageListPerPage,
-} from "@/lib/page-types";
-import { adminLogoutAction, createPageAction, deletePageAction, fetchPages } from "@/lib/pages.server";
+import { formatPublishedDate, formatVisitedCell } from "@/lib/page-format";
+import { PAGE_LIST_PER_PAGE_OPTIONS, type PageListPerPage } from "@/lib/page-types";
+import { deletePageAction, fetchPages } from "@/lib/pages.server";
 
 const DEFAULT_PER_PAGE: PageListPerPage = 20;
+const ALL_VALUE = "__all__";
 
 type PagesSearch = {
   q?: string;
   page?: number;
   perPage?: PageListPerPage;
+  territoryId?: number;
+  ownerId?: number;
+  campaignId?: number;
+  publishedFrom?: string;
+  publishedTo?: string;
 };
 
 function normalizePerPage(value: unknown): PageListPerPage {
@@ -39,32 +42,65 @@ function normalizePerPage(value: unknown): PageListPerPage {
     : DEFAULT_PER_PAGE;
 }
 
+function optionalPositiveInt(value: unknown): number | undefined {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : undefined;
+}
+
+function optionalDate(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim().slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? trimmed : undefined;
+}
+
 export const Route = createFileRoute("/admin/")({
   head: () => ({
     meta: [{ name: "robots", content: "noindex, nofollow" }, { title: "Admin — Pages" }],
   }),
   validateSearch: (search: Record<string, unknown>): PagesSearch => {
     const result: PagesSearch = {};
-    if (typeof search.q === "string" && search.q.trim()) {
-      result.q = search.q;
-    }
+    if (typeof search.q === "string" && search.q.trim()) result.q = search.q;
     const page = Math.max(1, Math.floor(Number(search.page)) || 1);
     if (page > 1) result.page = page;
     const perPage = normalizePerPage(search.perPage);
     if (perPage !== DEFAULT_PER_PAGE) result.perPage = perPage;
+    const territoryId = optionalPositiveInt(search.territoryId);
+    if (territoryId) result.territoryId = territoryId;
+    const ownerId = optionalPositiveInt(search.ownerId);
+    if (ownerId) result.ownerId = ownerId;
+    const campaignId = optionalPositiveInt(search.campaignId);
+    if (campaignId) result.campaignId = campaignId;
+    const publishedFrom = optionalDate(search.publishedFrom);
+    if (publishedFrom) result.publishedFrom = publishedFrom;
+    const publishedTo = optionalDate(search.publishedTo);
+    if (publishedTo) result.publishedTo = publishedTo;
     return result;
   },
   loaderDeps: ({ search }) => ({
     search: search.q?.trim() ?? "",
     page: search.page ?? 1,
     perPage: search.perPage ?? DEFAULT_PER_PAGE,
+    territoryId: search.territoryId ?? null,
+    ownerId: search.ownerId ?? null,
+    campaignId: search.campaignId ?? null,
+    publishedFrom: search.publishedFrom ?? null,
+    publishedTo: search.publishedTo ?? null,
   }),
   loader: async ({ deps }) => fetchPages({ data: deps }),
   component: AdminPagesList,
 });
 
 function AdminPagesList() {
-  const { items: pages, total, page, perPage, totalPages } = Route.useLoaderData();
+  const {
+    items: pages,
+    total,
+    page,
+    perPage,
+    totalPages,
+    territories,
+    owners,
+    campaigns,
+  } = Route.useLoaderData();
   const search = Route.useSearch();
   const query = search.q ?? "";
   const navigate = useNavigate({ from: Route.fullPath });
@@ -96,42 +132,31 @@ function AdminPagesList() {
 
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
-  const emptyMessage = query.trim()
-    ? "No pages match your search."
+  const hasFilters = Boolean(
+    query.trim() ||
+      search.territoryId ||
+      search.ownerId ||
+      search.campaignId ||
+      search.publishedFrom ||
+      search.publishedTo,
+  );
+  const emptyMessage = hasFilters
+    ? "No pages match your filters."
     : "No pages yet. Create the first one.";
 
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Landing Pages</h1>
           <p className="text-sm text-muted-foreground">Manage personalized dossier pages.</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link to="/admin/users">Users</Link>
-          </Button>
-          <Button
-            onClick={async () => {
-              const { pageId } = await createPageAction();
-              await navigate({ to: "/admin/pages/$pageId", params: { pageId: String(pageId) } });
-            }}
-          >
-            Create New Page
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await adminLogoutAction();
-              await navigate({ to: "/admin/login" });
-            }}
-          >
-            Logout
-          </Button>
-        </div>
+        <Button asChild>
+          <Link to="/admin/pages/new">Create New Page</Link>
+        </Button>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+      <div className="mb-4 flex flex-wrap items-end gap-3">
         <Input
           value={searchInput}
           onChange={(event) => setSearchInput(event.target.value)}
@@ -139,7 +164,68 @@ function AdminPagesList() {
           className="max-w-sm"
           aria-label="Search pages by name or slug"
         />
-        <div className="flex items-center gap-2">
+
+        <FilterSelect
+          label="Territory"
+          value={search.territoryId}
+          options={territories}
+          onChange={(territoryId) => {
+            void navigate({
+              search: (prev) => ({ ...prev, territoryId, page: undefined }),
+            });
+          }}
+        />
+        <FilterSelect
+          label="Owner"
+          value={search.ownerId}
+          options={owners}
+          onChange={(ownerId) => {
+            void navigate({
+              search: (prev) => ({ ...prev, ownerId, page: undefined }),
+            });
+          }}
+        />
+        <FilterSelect
+          label="Campaign"
+          value={search.campaignId}
+          options={campaigns}
+          onChange={(campaignId) => {
+            void navigate({
+              search: (prev) => ({ ...prev, campaignId, page: undefined }),
+            });
+          }}
+        />
+
+        <div className="space-y-1">
+          <span className="text-xs text-muted-foreground">Published from</span>
+          <Input
+            type="date"
+            className="w-[10.5rem]"
+            value={search.publishedFrom ?? ""}
+            onChange={(event) => {
+              const publishedFrom = optionalDate(event.target.value);
+              void navigate({
+                search: (prev) => ({ ...prev, publishedFrom, page: undefined }),
+              });
+            }}
+          />
+        </div>
+        <div className="space-y-1">
+          <span className="text-xs text-muted-foreground">Published to</span>
+          <Input
+            type="date"
+            className="w-[10.5rem]"
+            value={search.publishedTo ?? ""}
+            onChange={(event) => {
+              const publishedTo = optionalDate(event.target.value);
+              void navigate({
+                search: (prev) => ({ ...prev, publishedTo, page: undefined }),
+              });
+            }}
+          />
+        </div>
+
+        <div className="flex items-center gap-2 pb-0.5">
           <span className="text-sm text-muted-foreground whitespace-nowrap">Per page</span>
           <Select
             value={String(perPage)}
@@ -175,16 +261,18 @@ function AdminPagesList() {
               <TableHead>ID</TableHead>
               <TableHead>First Name</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Territory</TableHead>
+              <TableHead>Owner</TableHead>
+              <TableHead>Campaign</TableHead>
+              <TableHead>Published</TableHead>
               <TableHead>Visited</TableHead>
-              <TableHead>Modified</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {pages.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={9} className="py-8 text-center text-muted-foreground">
                   {emptyMessage}
                 </TableCell>
               </TableRow>
@@ -194,11 +282,13 @@ function AdminPagesList() {
                   <TableCell>{pageRow.page_id}</TableCell>
                   <TableCell>{pageRow.first_name || "—"}</TableCell>
                   <TableCell>{pageRow.slug || "—"}</TableCell>
+                  <TableCell>{pageRow.territory_name || "—"}</TableCell>
+                  <TableCell>{pageRow.owner_name || "—"}</TableCell>
+                  <TableCell>{pageRow.campaign_name || "—"}</TableCell>
+                  <TableCell>{formatPublishedDate(pageRow.published)}</TableCell>
                   <TableCell>
-                    {pageRow.status === PAGE_STATUS_PUBLISHED ? "Published" : "Draft"}
+                    {formatVisitedCell(pageRow.visited, pageRow.last_visited)}
                   </TableCell>
-                  <TableCell>{pageRow.visited}</TableCell>
-                  <TableCell>{pageRow.date_modified}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm" asChild>
@@ -275,6 +365,42 @@ function AdminPagesList() {
           </Button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value?: number;
+  options: Array<{ id: number; name: string }>;
+  onChange: (value: number | undefined) => void;
+}) {
+  return (
+    <div className="space-y-1">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <Select
+        value={value != null ? String(value) : ALL_VALUE}
+        onValueChange={(next) => {
+          onChange(next === ALL_VALUE ? undefined : Number(next));
+        }}
+      >
+        <SelectTrigger className="w-[9.5rem]">
+          <SelectValue placeholder={label} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ALL_VALUE}>All</SelectItem>
+          {options.map((option) => (
+            <SelectItem key={option.id} value={String(option.id)}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

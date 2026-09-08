@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,17 +39,12 @@ function AdminUsersPage() {
   const [busyId, setBusyId] = useState<number | null>(null);
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Admin Users</h1>
-          <p className="text-sm text-muted-foreground">
-            Signed in as {currentUsername ?? "admin"}.
-          </p>
-        </div>
-        <Button variant="outline" asChild>
-          <Link to="/admin">Back to Pages</Link>
-        </Button>
+    <div className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold">Admin Users</h1>
+        <p className="text-sm text-muted-foreground">
+          Signed in as {currentUsername ?? "admin"}.
+        </p>
       </div>
 
       <div className="mb-8 rounded-lg border bg-background p-6">

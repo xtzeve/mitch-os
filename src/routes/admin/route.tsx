@@ -1,4 +1,5 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import { AdminShell } from "@/components/admin/admin-shell";
 import { checkAdminAuth } from "@/lib/pages.server";
 
 export const Route = createFileRoute("/admin")({
@@ -13,9 +14,13 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (pathname === "/admin/login") {
+    return <Outlet />;
+  }
   return (
-    <div className="min-h-screen bg-muted/30">
+    <AdminShell>
       <Outlet />
-    </div>
+    </AdminShell>
   );
 }

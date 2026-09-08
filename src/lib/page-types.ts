@@ -27,8 +27,15 @@ export type PageRecord = {
   page_id: number;
   first_name: string;
   slug: string;
-  status: number;
+  territory_id: number | null;
+  owner_id: number | null;
+  campaign_id: number | null;
+  territory_name: string | null;
+  owner_name: string | null;
+  campaign_name: string | null;
+  published: string | null;
   visited: number;
+  last_visited: string | null;
   date_added: string;
   date_modified: string;
 };
@@ -46,9 +53,6 @@ export type LanguageRecord = {
 
 export const LANGUAGE_EN = 1;
 export const LANGUAGE_DE = 2;
-
-export const PAGE_STATUS_DRAFT = 0;
-export const PAGE_STATUS_PUBLISHED = 1;
 
 export const PAGE_LIST_PER_PAGE_OPTIONS = [10, 20, 50, 100] as const;
 export type PageListPerPage = (typeof PAGE_LIST_PER_PAGE_OPTIONS)[number];
@@ -89,6 +93,9 @@ export type PageFormDescription = PageDescriptionFields;
 export type PageFormData = {
   first_name: string;
   slug: string;
-  status: number;
+  territory_id: number | null;
+  owner_id: number | null;
+  campaign_id: number | null;
+  published: string | null;
   page_description: Record<number, PageFormDescription>;
 };

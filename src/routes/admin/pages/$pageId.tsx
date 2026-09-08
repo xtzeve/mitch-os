@@ -11,15 +11,15 @@ export const Route = createFileRoute("/admin/pages/$pageId")({
   loader: async ({ params }) => {
     const pageId = Number(params.pageId);
     if (!Number.isFinite(pageId)) throw notFound();
-    const form = await fetchPage({ data: { pageId } });
-    if (!form) throw notFound();
-    return { pageId, form };
+    const data = await fetchPage({ data: { pageId } });
+    if (!data) throw notFound();
+    return { pageId, ...data };
   },
   component: AdminEditPage,
 });
 
 function AdminEditPage() {
-  const { pageId, form } = Route.useLoaderData();
+  const { pageId, form, territories, owners, campaigns } = Route.useLoaderData();
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,10 +38,13 @@ function AdminEditPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <PageForm
         pageId={pageId}
         initialData={form}
+        territories={territories}
+        owners={owners}
+        campaigns={campaigns}
         onSave={handleSave}
         saving={saving}
         error={error}
