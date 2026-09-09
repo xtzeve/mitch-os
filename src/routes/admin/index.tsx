@@ -29,6 +29,7 @@ import {
   type PageListSortField,
 } from "@/lib/page-types";
 import { deletePageAction, fetchPages } from "@/lib/pages.server";
+import { PageVisitsDialog } from "@/components/admin/page-visits-dialog";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_PER_PAGE: PageListPerPage = 20;
@@ -148,6 +149,8 @@ function AdminPagesList() {
   const router = useRouter();
   const [busyId, setBusyId] = useState<number | null>(null);
   const [searchInput, setSearchInput] = useState(query);
+  const [visitsPageId, setVisitsPageId] = useState<number | null>(null);
+  const [visitsPageLabel, setVisitsPageLabel] = useState("");
 
   useEffect(() => {
     setSearchInput(query);
@@ -362,6 +365,18 @@ function AdminPagesList() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setVisitsPageId(pageRow.page_id);
+                          setVisitsPageLabel(
+                            pageRow.first_name || pageRow.slug || `#${pageRow.page_id}`,
+                          );
+                        }}
+                      >
+                        Visits
+                      </Button>
                       <Button variant="outline" size="sm" asChild>
                         <Link
                           to="/admin/pages/$pageId"
@@ -436,6 +451,15 @@ function AdminPagesList() {
           </Button>
         </div>
       </div>
+
+      <PageVisitsDialog
+        pageId={visitsPageId}
+        pageLabel={visitsPageLabel}
+        open={visitsPageId != null}
+        onOpenChange={(open) => {
+          if (!open) setVisitsPageId(null);
+        }}
+      />
     </div>
   );
 }

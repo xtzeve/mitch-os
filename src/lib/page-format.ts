@@ -24,6 +24,18 @@ function formatVisitedTimestamp(date: Date) {
     .replace(",", "");
 }
 
+export function formatDurationSec(totalSec: number): string {
+  const sec = Math.max(0, Math.floor(totalSec));
+  if (sec < 60) return `${sec}s`;
+  const hours = Math.floor(sec / 3600);
+  const minutes = Math.floor((sec % 3600) / 60);
+  const seconds = sec % 60;
+  if (hours > 0) {
+    return seconds > 0 ? `${hours}h ${minutes}m ${seconds}s` : `${hours}h ${minutes}m`;
+  }
+  return seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
+}
+
 export function formatVisitedCell(
   visited: number,
   lastVisited: string | null | undefined,

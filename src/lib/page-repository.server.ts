@@ -90,8 +90,8 @@ export type ListPagesParams = {
   campaignId?: number | null;
   publishedFrom?: string | null;
   publishedTo?: string | null;
-  sortBy?: PageListSortField;
-  sortDir?: PageListSortDir;
+  sortBy?: string;
+  sortDir?: string;
 };
 
 export type ListPagesResult = {
@@ -323,18 +323,6 @@ export async function getPublishedPageBySlug(
     ...mapPage(record),
     ...mapDescription(record),
   };
-}
-
-export async function incrementPageVisited(pageId: number) {
-  const db = await getDb();
-  await db
-    .prepare(
-      `UPDATE page
-       SET visited = visited + 1, last_visited = datetime('now')
-       WHERE page_id = ?`,
-    )
-    .bind(pageId)
-    .run();
 }
 
 export async function isSlugTaken(slug: string, excludePageId?: number) {

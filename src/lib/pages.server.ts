@@ -6,11 +6,11 @@ import {
   deletePage,
   getPageById,
   getPublishedPageBySlug,
-  incrementPageVisited,
   listPages,
   pageToFormData,
   savePage,
 } from "@/lib/page-repository.server";
+import { listPageVisits } from "@/lib/page-visit-repository.server";
 import {
   createCatalogItem,
   deleteCatalogItem,
@@ -48,7 +48,6 @@ export const fetchPublishedLanding = createServerFn({ method: "GET" })
       setResponseStatus(404);
       return null;
     }
-    await incrementPageVisited(page.page_id);
     return page;
   });
 
@@ -261,6 +260,27 @@ export const deleteCatalogAction = createServerFn({ method: "POST" })
         error: error instanceof Error ? error.message : "Failed to delete.",
       };
     }
+  });
+
+export const fetchPageVisits = createServerFn({ method: "GET" })
+  .inputValidator((data: { pageId: number }) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const page = await getPageById(data.pageId);
+    if (!page) {
+      setResponseStatus(404);
+      return null;
+    }
+    const visits = await listPageVisits(data.pageId);
+    return {
+      page: {
+        page_id: page.page_id,
+        first_name: page.first_name,
+        slug: page.slug,
+        visited: page.visited,
+      },
+      visits,
+    };
   });
 
 export const previewLanding = createServerFn({ method: "GET" })

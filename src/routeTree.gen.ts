@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeIndexRouteImport } from './routes/de/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DeSlugRouteImport } from './routes/de/$slug'
+import { Route as ApiVisitRouteImport } from './routes/api/visit'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 import { Route as AdminTerritoriesIndexRouteImport } from './routes/admin/territories/index'
@@ -65,6 +66,11 @@ const DeSlugRoute = DeSlugRouteImport.update({
   path: '/de/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVisitRoute = ApiVisitRouteImport.update({
+  id: '/api/visit',
+  path: '/api/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
   '/admin': typeof AdminIndexRoute
   '/de': typeof DeIndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
+    | '/api/visit'
     | '/de/$slug'
     | '/admin/'
     | '/de/'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
+    | '/api/visit'
     | '/de/$slug'
     | '/admin'
     | '/de'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
+    | '/api/visit'
     | '/de/$slug'
     | '/admin/'
     | '/de/'
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  ApiVisitRoute: typeof ApiVisitRoute
   DeSlugRoute: typeof DeSlugRoute
   DeIndexRoute: typeof DeIndexRoute
 }
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/de/$slug'
       fullPath: '/de/$slug'
       preLoaderRoute: typeof DeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/visit': {
+      id: '/api/visit'
+      path: '/api/visit'
+      fullPath: '/api/visit'
+      preLoaderRoute: typeof ApiVisitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -357,6 +377,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   LegalNoticeRoute: LegalNoticeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  ApiVisitRoute: ApiVisitRoute,
   DeSlugRoute: DeSlugRoute,
   DeIndexRoute: DeIndexRoute,
 }
