@@ -4,6 +4,7 @@ import {
   pingPageVisit,
   startOrResumePageVisit,
 } from "@/lib/page-visit-repository.server";
+import { getRequestAsn } from "@/lib/page-visit-types";
 import {
   buildVisitDebugPayload,
   writeVisitDebugLog,
@@ -47,6 +48,7 @@ export const Route = createFileRoute("/api/visit")({
           );
 
           const action = body.action;
+          const asn = getRequestAsn(request);
 
           if (action === "start") {
             const result = await startOrResumePageVisit({
@@ -54,12 +56,13 @@ export const Route = createFileRoute("/api/visit")({
               visitId: body.visitId != null ? Number(body.visitId) : null,
               locale: body.locale ?? null,
               userAgent: request.headers.get("user-agent"),
+              asn,
             });
             await writeVisitDebugLog(
               buildVisitDebugPayload({
                 request,
                 body: body as Record<string, unknown>,
-                extra: { phase: "start-result", result },
+                extra: { phase: "start-result", result, asn },
               }),
             );
             return Response.json(result);
@@ -70,6 +73,7 @@ export const Route = createFileRoute("/api/visit")({
               visitId: Number(body.visitId),
               pageId: Number(body.pageId),
               durationSec: Number(body.durationSec ?? 0),
+              asn,
             });
             return Response.json({ ok: true });
           }
@@ -79,6 +83,7 @@ export const Route = createFileRoute("/api/visit")({
               visitId: Number(body.visitId),
               pageId: Number(body.pageId),
               durationSec: Number(body.durationSec ?? 0),
+              asn,
             });
             return Response.json({ ok: true });
           }

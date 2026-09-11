@@ -28,6 +28,7 @@ import {
   clearVisitDebugLogsAction,
   fetchVisitDebugLogs,
 } from "@/lib/pages.server";
+import { formatAdminDateTime } from "@/lib/page-format";
 import type { VisitDebugLogRow } from "@/lib/visit-debug-log.server";
 
 const PER_PAGE_OPTIONS = [20, 50, 100] as const;
@@ -314,7 +315,9 @@ function VisitLogsPage() {
                     onClick={() => setSelected(row)}
                   >
                     <TableCell className="font-mono text-xs">{row.id}</TableCell>
-                    <TableCell className="whitespace-nowrap text-xs">{row.created_at}</TableCell>
+                    <TableCell className="whitespace-nowrap text-xs">
+                      {formatAdminDateTime(row.created_at)}
+                    </TableCell>
                     <TableCell className="text-xs font-medium">
                       {row.action ?? "—"}
                       {s.event && s.event !== row.action ? (
@@ -380,7 +383,7 @@ function VisitLogsPage() {
               </DialogTitle>
               <DialogDescription>
                 page {selected?.page_id ?? "—"} · visit {selected?.visit_id ?? "—"} ·{" "}
-                {selected?.created_at}
+                {selected ? formatAdminDateTime(selected.created_at) : ""}
                 {selectedSummary ? (
                   <>
                     {" "}

@@ -18,3 +18,22 @@ export function isBotUserAgent(userAgent: string | null | undefined): boolean {
     userAgent,
   );
 }
+
+/**
+ * Cloudflare ASN numbers that run LinkedIn/Azure-style headless link scanners.
+ * Observed: rotating IPs, Chrome spoof, ~27s sessions, asOrganization "Microsoft Limited".
+ */
+export const BLOCKED_VISIT_ASNS = new Set([8075]);
+
+export function isBlockedVisitAsn(asn: number | string | null | undefined): boolean {
+  if (asn == null || asn === "") return false;
+  const n = typeof asn === "number" ? asn : Number(asn);
+  return Number.isFinite(n) && BLOCKED_VISIT_ASNS.has(n);
+}
+
+export function getRequestAsn(request: Request): number | null {
+  const cf = request.cf as { asn?: number | string } | undefined;
+  if (cf?.asn == null || cf.asn === "") return null;
+  const n = Number(cf.asn);
+  return Number.isFinite(n) ? n : null;
+}

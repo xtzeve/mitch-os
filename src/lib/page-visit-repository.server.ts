@@ -4,7 +4,11 @@ import {
   VISIT_MIN_ENGAGEMENT_SEC,
   VISIT_SESSION_TTL_SEC,
 } from "@/lib/page-visit-constants";
-import { isBotUserAgent, type PageVisitRecord } from "@/lib/page-visit-types";
+import {
+  isBlockedVisitAsn,
+  isBotUserAgent,
+  type PageVisitRecord,
+} from "@/lib/page-visit-types";
 
 export type { PageVisitRecord } from "@/lib/page-visit-types";
 export {
@@ -83,28 +87,49 @@ export async function startOrResumePageVisit(input: {
   visitId?: number | null;
   locale?: string | null;
   userAgent?: string | null;
-}): Promise<{ visitId: number; resumed: boolean }> {
+  asn?: number | string | null;
+}): Promise<{ visitId: number; resumed: boolean; isBot: boolean }> {
   const pageId = Number(input.pageId);
   if (!Number.isFinite(pageId) || pageId <= 0) {
     throw new Error("Invalid pageId.");
   }
+
+  const asnBlocked = isBlockedVisitAsn(input.asn);
 
   const existingId = input.visitId != null ? Number(input.visitId) : null;
   if (existingId && Number.isFinite(existingId)) {
     const existing = await getVisitById(existingId);
     if (existing && existing.page_id === pageId && isSessionAlive(existing)) {
       const db = await getDb();
-      await db
-        .prepare(
-          `UPDATE page_visit
-           SET last_seen_at = datetime('now'),
-               locale = COALESCE(?, locale),
-               ended_at = NULL
-           WHERE visit_id = ?`,
-        )
-        .bind(input.locale ?? null, existingId)
-        .run();
-      return { visitId: existingId, resumed: true };
+      if (asnBlocked && !existing.is_bot) {
+        await db
+          .prepare(
+            `UPDATE page_visit
+             SET last_seen_at = datetime('now'),
+                 locale = COALESCE(?, locale),
+                 ended_at = NULL,
+                 is_bot = 1
+             WHERE visit_id = ?`,
+          )
+          .bind(input.locale ?? null, existingId)
+          .run();
+      } else {
+        await db
+          .prepare(
+            `UPDATE page_visit
+             SET last_seen_at = datetime('now'),
+                 locale = COALESCE(?, locale),
+                 ended_at = NULL
+             WHERE visit_id = ?`,
+          )
+          .bind(input.locale ?? null, existingId)
+          .run();
+      }
+      return {
+        visitId: existingId,
+        resumed: true,
+        isBot: existing.is_bot || asnBlocked,
+      };
     }
   }
 
@@ -119,7 +144,7 @@ export async function startOrResumePageVisit(input: {
   if (!page) throw new Error("Page not found.");
 
   const userAgent = input.userAgent?.slice(0, 500) ?? null;
-  const bot = isBotUserAgent(userAgent) ? 1 : 0;
+  const bot = isBotUserAgent(userAgent) || asnBlocked ? 1 : 0;
 
   const insert = await db
     .prepare(
@@ -131,13 +156,28 @@ export async function startOrResumePageVisit(input: {
     .bind(pageId, input.locale ?? null, userAgent, bot)
     .run();
 
-  return { visitId: Number(insert.meta.last_row_id), resumed: false };
+  return {
+    visitId: Number(insert.meta.last_row_id),
+    resumed: false,
+    isBot: bot === 1,
+  };
+}
+
+async function markBotIfBlockedAsn(visit: PageVisitRecord, asn?: number | string | null) {
+  if (visit.is_bot || !isBlockedVisitAsn(asn)) return visit;
+  const db = await getDb();
+  await db
+    .prepare(`UPDATE page_visit SET is_bot = 1 WHERE visit_id = ? AND is_bot = 0`)
+    .bind(visit.visit_id)
+    .run();
+  return { ...visit, is_bot: true };
 }
 
 export async function pingPageVisit(input: {
   visitId: number;
   pageId: number;
   durationSec: number;
+  asn?: number | string | null;
 }): Promise<void> {
   const visitId = Number(input.visitId);
   const pageId = Number(input.pageId);
@@ -146,10 +186,11 @@ export async function pingPageVisit(input: {
     throw new Error("Invalid visit.");
   }
 
-  const existing = await getVisitById(visitId);
+  let existing = await getVisitById(visitId);
   if (!existing || existing.page_id !== pageId) {
     throw new Error("Visit not found.");
   }
+  existing = await markBotIfBlockedAsn(existing, input.asn);
 
   const nextDuration = Math.max(existing.duration_sec, durationSec);
   const db = await getDb();
@@ -166,16 +207,19 @@ export async function pingPageVisit(input: {
 
   await maybeCountVisit(existing, nextDuration);
 
-  await db
-    .prepare(`UPDATE page SET last_visited = datetime('now') WHERE page_id = ?`)
-    .bind(pageId)
-    .run();
+  if (!existing.is_bot) {
+    await db
+      .prepare(`UPDATE page SET last_visited = datetime('now') WHERE page_id = ?`)
+      .bind(pageId)
+      .run();
+  }
 }
 
 export async function endPageVisit(input: {
   visitId: number;
   pageId: number;
   durationSec: number;
+  asn?: number | string | null;
 }): Promise<void> {
   const visitId = Number(input.visitId);
   const pageId = Number(input.pageId);
@@ -184,10 +228,11 @@ export async function endPageVisit(input: {
     throw new Error("Invalid visit.");
   }
 
-  const existing = await getVisitById(visitId);
+  let existing = await getVisitById(visitId);
   if (!existing || existing.page_id !== pageId) {
     throw new Error("Visit not found.");
   }
+  existing = await markBotIfBlockedAsn(existing, input.asn);
 
   const nextDuration = Math.max(existing.duration_sec, durationSec);
   const db = await getDb();
