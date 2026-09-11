@@ -5,6 +5,7 @@ import {
   LayoutList,
   LogOut,
   Menu,
+  ScrollText,
   UserRound,
   Users,
   X,
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { to: "/admin/owners", label: "Owners", icon: UserRound },
   { to: "/admin/campaigns", label: "Campaigns", icon: FolderKanban },
   { to: "/admin/users", label: "Users", icon: Users },
+  { to: "/admin/visit-logs", label: "Visit Logs", icon: ScrollText },
 ] as const;
 
 function isActivePath(pathname: string, to: string, exact?: boolean) {

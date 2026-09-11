@@ -283,6 +283,28 @@ export const fetchPageVisits = createServerFn({ method: "GET" })
     };
   });
 
+export const fetchVisitDebugLogs = createServerFn({ method: "GET" })
+  .inputValidator(
+    (data: { page?: number; perPage?: number; pageId?: number; action?: string }) => data,
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const { listVisitDebugLogs } = await import("@/lib/visit-debug-log.server");
+    return listVisitDebugLogs({
+      page: data.page,
+      perPage: data.perPage,
+      pageId: data.pageId,
+      action: data.action,
+    });
+  });
+
+export const clearVisitDebugLogsAction = createServerFn({ method: "POST" }).handler(async () => {
+  await requireAdmin();
+  const { clearVisitDebugLogs } = await import("@/lib/visit-debug-log.server");
+  await clearVisitDebugLogs();
+  return { success: true as const };
+});
+
 export const previewLanding = createServerFn({ method: "GET" })
   .inputValidator((data: { pageId: number; languageId: number }) => data)
   .handler(async ({ data }) => {

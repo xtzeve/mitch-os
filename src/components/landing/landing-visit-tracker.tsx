@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
 import { VISIT_HEARTBEAT_SEC, VISIT_SESSION_TTL_SEC } from "@/lib/page-visit-constants";
+import {
+  collectVisitClientProbe,
+  enrichVisitClientProbe,
+} from "@/lib/visit-client-probe";
 
 type LandingVisitTrackerProps = {
   pageId: number;
@@ -48,6 +52,7 @@ export function LandingVisitTracker({ pageId, locale }: LandingVisitTrackerProps
   const visitIdRef = useRef<number | null>(null);
   const activeSecRef = useRef(0);
   const segmentStartRef = useRef<number | null>(null);
+  const clientProbeRef = useRef<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,16 +79,32 @@ export function LandingVisitTracker({ pageId, locale }: LandingVisitTrackerProps
       }
     };
 
+    const withClient = (body: Record<string, unknown>, event: string) => ({
+      ...body,
+      client: {
+        ...(clientProbeRef.current ?? collectVisitClientProbe()),
+        event,
+        visibleSec: currentVisibleSec(),
+        visibilityState: document.visibilityState,
+        hidden: document.hidden,
+        hasFocus: typeof document.hasFocus === "function" ? document.hasFocus() : null,
+        at: new Date().toISOString(),
+      },
+    });
+
     const flush = (action: "ping" | "end", useBeacon = false) => {
       const visitId = visitIdRef.current;
       if (!visitId) return;
       postVisit(
-        {
+        withClient(
+          {
+            action,
+            pageId,
+            visitId,
+            durationSec: currentVisibleSec(),
+          },
           action,
-          pageId,
-          visitId,
-          durationSec: currentVisibleSec(),
-        },
+        ),
         { keepalive: action === "end", beacon: useBeacon && action === "end" },
       );
       if (action === "ping") {
@@ -107,6 +128,15 @@ export function LandingVisitTracker({ pageId, locale }: LandingVisitTrackerProps
 
     async function boot() {
       const existing = readVisitId(pageId);
+      const probe = await enrichVisitClientProbe(
+        collectVisitClientProbe({
+          event: "start",
+          existingVisitId: existing,
+          bootAt: new Date().toISOString(),
+        }),
+      );
+      clientProbeRef.current = probe;
+
       try {
         const res = await fetch("/api/visit", {
           method: "POST",
@@ -117,6 +147,7 @@ export function LandingVisitTracker({ pageId, locale }: LandingVisitTrackerProps
             pageId,
             visitId: existing,
             locale,
+            client: probe,
           }),
         });
         if (!res.ok || cancelled) return;

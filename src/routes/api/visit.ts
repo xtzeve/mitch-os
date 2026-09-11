@@ -4,6 +4,10 @@ import {
   pingPageVisit,
   startOrResumePageVisit,
 } from "@/lib/page-visit-repository.server";
+import {
+  buildVisitDebugPayload,
+  writeVisitDebugLog,
+} from "@/lib/visit-debug-log.server";
 
 type VisitBody = {
   action?: string;
@@ -11,6 +15,7 @@ type VisitBody = {
   visitId?: number;
   durationSec?: number;
   locale?: string;
+  client?: Record<string, unknown>;
 };
 
 async function parseBody(request: Request): Promise<VisitBody> {
@@ -33,6 +38,14 @@ export const Route = createFileRoute("/api/visit")({
       POST: async ({ request }) => {
         try {
           const body = await parseBody(request);
+
+          await writeVisitDebugLog(
+            buildVisitDebugPayload({
+              request,
+              body: body as Record<string, unknown>,
+            }),
+          );
+
           const action = body.action;
 
           if (action === "start") {
@@ -42,6 +55,13 @@ export const Route = createFileRoute("/api/visit")({
               locale: body.locale ?? null,
               userAgent: request.headers.get("user-agent"),
             });
+            await writeVisitDebugLog(
+              buildVisitDebugPayload({
+                request,
+                body: body as Record<string, unknown>,
+                extra: { phase: "start-result", result },
+              }),
+            );
             return Response.json(result);
           }
 
@@ -66,6 +86,17 @@ export const Route = createFileRoute("/api/visit")({
           return Response.json({ error: "Unknown action." }, { status: 400 });
         } catch (error) {
           const message = error instanceof Error ? error.message : "Visit tracking failed.";
+          try {
+            await writeVisitDebugLog({
+              at: new Date().toISOString(),
+              action: "error",
+              pageId: null,
+              visitId: null,
+              error: message,
+            });
+          } catch {
+            // ignore logging failures
+          }
           return Response.json({ error: message }, { status: 400 });
         }
       },
