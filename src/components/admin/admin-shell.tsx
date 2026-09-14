@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 import { adminLogoutAction } from "@/lib/pages.server";
 
 const NAV_ITEMS = [
@@ -123,6 +124,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
+      <Toaster richColors closeButton position="top-center" />
     </div>
   );
 }

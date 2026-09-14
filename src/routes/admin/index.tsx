@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -30,6 +32,8 @@ import {
 } from "@/lib/page-types";
 import { deletePageAction, fetchPages } from "@/lib/pages.server";
 import { PageVisitsDialog } from "@/components/admin/page-visits-dialog";
+import { PageXlsxUploadDialog } from "@/components/admin/page-xlsx-upload-dialog";
+import { PAGE_XLSX_EXPORT_HEADERS, pagesToXlsxExportRows } from "@/lib/page-xlsx-import";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_PER_PAGE: PageListPerPage = 20;
@@ -39,6 +43,8 @@ type PagesSearch = {
   q?: string;
   page?: number;
   perPage?: PageListPerPage;
+  lastName?: string;
+  company?: string;
   territoryId?: number;
   ownerId?: number;
   campaignId?: number;
@@ -96,6 +102,12 @@ export const Route = createFileRoute("/admin/")({
     if (page > 1) result.page = page;
     const perPage = normalizePerPage(search.perPage);
     if (perPage !== DEFAULT_PER_PAGE) result.perPage = perPage;
+    if (typeof search.lastName === "string" && search.lastName.trim()) {
+      result.lastName = search.lastName.trim();
+    }
+    if (typeof search.company === "string" && search.company.trim()) {
+      result.company = search.company.trim();
+    }
     const territoryId = optionalPositiveInt(search.territoryId);
     if (territoryId) result.territoryId = territoryId;
     const ownerId = optionalPositiveInt(search.ownerId);
@@ -118,6 +130,8 @@ export const Route = createFileRoute("/admin/")({
     search: search.q?.trim() ?? "",
     page: search.page ?? 1,
     perPage: search.perPage ?? DEFAULT_PER_PAGE,
+    lastName: search.lastName ?? null,
+    company: search.company ?? null,
     territoryId: search.territoryId ?? null,
     ownerId: search.ownerId ?? null,
     campaignId: search.campaignId ?? null,
@@ -145,16 +159,90 @@ function AdminPagesList() {
   } = Route.useLoaderData();
   const search = Route.useSearch();
   const query = search.q ?? "";
+  const lastNameFilter = search.lastName ?? "";
+  const companyFilter = search.company ?? "";
   const navigate = useNavigate({ from: Route.fullPath });
   const router = useRouter();
   const [busyId, setBusyId] = useState<number | null>(null);
   const [searchInput, setSearchInput] = useState(query);
+  const [lastNameInput, setLastNameInput] = useState(lastNameFilter);
+  const [companyInput, setCompanyInput] = useState(companyFilter);
   const [visitsPageId, setVisitsPageId] = useState<number | null>(null);
   const [visitsPageLabel, setVisitsPageLabel] = useState("");
+  const [xlsxOpen, setXlsxOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(() => new Set());
+
+  const pageIds = useMemo(() => pages.map((row) => row.page_id), [pages]);
+  const selectedOnPageCount = pageIds.filter((id) => selectedIds.has(id)).length;
+  const allOnPageSelected = pageIds.length > 0 && selectedOnPageCount === pageIds.length;
+  const someOnPageSelected = selectedOnPageCount > 0 && !allOnPageSelected;
+
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [page, perPage, query, lastNameFilter, companyFilter, sortBy, sortDir, search.territoryId, search.ownerId, search.campaignId, search.publishedFrom, search.publishedTo]);
+
+  const toggleRowSelected = (pageId: number, checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(pageId);
+      else next.delete(pageId);
+      return next;
+    });
+  };
+
+  const toggleSelectAllOnPage = (checked: boolean) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      for (const id of pageIds) {
+        if (checked) next.add(id);
+        else next.delete(id);
+      }
+      return next;
+    });
+  };
+
+  const selectedPages = useMemo(
+    () => pages.filter((row) => selectedIds.has(row.page_id)),
+    [pages, selectedIds],
+  );
+
+  const exportSelectedXlsx = async () => {
+    if (selectedPages.length === 0) return;
+    const count = selectedPages.length;
+    const fileName = `landing-pages-export-${new Date().toISOString().slice(0, 10)}.xlsx`;
+    try {
+      const XLSX = await import("xlsx");
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "https://mitch-os.com";
+      const rows = pagesToXlsxExportRows(selectedPages, origin);
+      const sheet = XLSX.utils.json_to_sheet(rows, {
+        header: [...PAGE_XLSX_EXPORT_HEADERS],
+      });
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, "Sheet1");
+      XLSX.writeFile(workbook, fileName);
+      setSelectedIds(new Set());
+      toast.success("Export complete", {
+        description: `Downloaded ${fileName} (${count} row${count === 1 ? "" : "s"}).`,
+      });
+    } catch {
+      toast.error("Export failed", {
+        description: "Could not create the XLSX file. Try again.",
+      });
+    }
+  };
 
   useEffect(() => {
     setSearchInput(query);
   }, [query]);
+
+  useEffect(() => {
+    setLastNameInput(lastNameFilter);
+  }, [lastNameFilter]);
+
+  useEffect(() => {
+    setCompanyInput(companyFilter);
+  }, [companyFilter]);
 
   useEffect(() => {
     const trimmed = searchInput.trim();
@@ -174,6 +262,42 @@ function AdminPagesList() {
     return () => window.clearTimeout(timer);
   }, [navigate, query, searchInput]);
 
+  useEffect(() => {
+    const trimmed = lastNameInput.trim();
+    if (trimmed === lastNameFilter) return;
+
+    const timer = window.setTimeout(() => {
+      void navigate({
+        search: (prev) => ({
+          ...prev,
+          lastName: trimmed || undefined,
+          page: undefined,
+        }),
+        replace: true,
+      });
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [lastNameFilter, lastNameInput, navigate]);
+
+  useEffect(() => {
+    const trimmed = companyInput.trim();
+    if (trimmed === companyFilter) return;
+
+    const timer = window.setTimeout(() => {
+      void navigate({
+        search: (prev) => ({
+          ...prev,
+          company: trimmed || undefined,
+          page: undefined,
+        }),
+        replace: true,
+      });
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [companyFilter, companyInput, navigate]);
+
   const toggleSort = (field: PageListSortField) => {
     const nextDir: PageListSortDir =
       sortBy === field ? (sortDir === "asc" ? "desc" : "asc") : "desc";
@@ -190,6 +314,8 @@ function AdminPagesList() {
   const to = Math.min(page * perPage, total);
   const hasFilters = Boolean(
     query.trim() ||
+      lastNameFilter ||
+      companyFilter ||
       search.territoryId ||
       search.ownerId ||
       search.campaignId ||
@@ -200,6 +326,19 @@ function AdminPagesList() {
     ? "No pages match your filters."
     : "No pages yet. Create the first one.";
 
+  const resetFilters = () => {
+    setSearchInput("");
+    setLastNameInput("");
+    setCompanyInput("");
+    void navigate({
+      search: (prev) => ({
+        sortBy: prev.sortBy,
+        sortDir: prev.sortDir,
+        perPage: prev.perPage,
+      }),
+    });
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -207,106 +346,145 @@ function AdminPagesList() {
           <h1 className="text-2xl font-semibold">Landing Pages</h1>
           <p className="text-sm text-muted-foreground">Manage personalized dossier pages.</p>
         </div>
-        <Button asChild>
-          <Link to="/admin/pages/new">Create New Page</Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {selectedPages.length > 0 ? (
+            <Button type="button" variant="secondary" onClick={() => void exportSelectedXlsx()}>
+              Export XLSX ({selectedPages.length})
+            </Button>
+          ) : null}
+          <Button type="button" variant="outline" onClick={() => setXlsxOpen(true)}>
+            Upload xlsx
+          </Button>
+          <Button asChild>
+            <Link to="/admin/pages/new">Create New Page</Link>
+          </Button>
+        </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-end gap-3">
-        <Input
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          placeholder="Search by name or slug…"
-          className="max-w-sm"
-          aria-label="Search pages by name or slug"
-        />
-
-        <FilterSelect
-          label="Territory"
-          value={search.territoryId}
-          options={territories}
-          onChange={(territoryId) => {
-            void navigate({
-              search: (prev) => ({ ...prev, territoryId, page: undefined }),
-            });
-          }}
-        />
-        <FilterSelect
-          label="Owner"
-          value={search.ownerId}
-          options={owners}
-          onChange={(ownerId) => {
-            void navigate({
-              search: (prev) => ({ ...prev, ownerId, page: undefined }),
-            });
-          }}
-        />
-        <FilterSelect
-          label="Campaign"
-          value={search.campaignId}
-          options={campaigns}
-          onChange={(campaignId) => {
-            void navigate({
-              search: (prev) => ({ ...prev, campaignId, page: undefined }),
-            });
-          }}
-        />
-
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">Published from</span>
-          <Input
-            type="date"
-            className="w-[10.5rem]"
-            value={search.publishedFrom ?? ""}
-            onChange={(event) => {
-              const publishedFrom = optionalDate(event.target.value);
+      <div className="mb-4 rounded-lg border bg-background p-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+          <div className="space-y-1.5 sm:col-span-2 lg:col-span-2">
+            <span className="text-xs font-medium text-muted-foreground">Search</span>
+            <Input
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="Name, company or slug…"
+              aria-label="Search pages by name, company or slug"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Last name</span>
+            <Input
+              value={lastNameInput}
+              onChange={(event) => setLastNameInput(event.target.value)}
+              placeholder="Last name…"
+              aria-label="Filter by last name"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Company</span>
+            <Input
+              value={companyInput}
+              onChange={(event) => setCompanyInput(event.target.value)}
+              placeholder="Company…"
+              aria-label="Filter by company"
+            />
+          </div>
+          <FilterSelect
+            label="Territory"
+            value={search.territoryId}
+            options={territories}
+            onChange={(territoryId) => {
               void navigate({
-                search: (prev) => ({ ...prev, publishedFrom, page: undefined }),
+                search: (prev) => ({ ...prev, territoryId, page: undefined }),
               });
             }}
           />
-        </div>
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">Published to</span>
-          <Input
-            type="date"
-            className="w-[10.5rem]"
-            value={search.publishedTo ?? ""}
-            onChange={(event) => {
-              const publishedTo = optionalDate(event.target.value);
+          <FilterSelect
+            label="Owner"
+            value={search.ownerId}
+            options={owners}
+            onChange={(ownerId) => {
               void navigate({
-                search: (prev) => ({ ...prev, publishedTo, page: undefined }),
+                search: (prev) => ({ ...prev, ownerId, page: undefined }),
               });
             }}
           />
-        </div>
 
-        <div className="flex items-center gap-2 pb-0.5">
-          <span className="text-sm text-muted-foreground whitespace-nowrap">Per page</span>
-          <Select
-            value={String(perPage)}
-            onValueChange={(value) => {
-              const next = normalizePerPage(value);
+          <FilterSelect
+            label="Campaign"
+            value={search.campaignId}
+            options={campaigns}
+            onChange={(campaignId) => {
               void navigate({
-                search: (prev) => ({
-                  ...prev,
-                  perPage: next === DEFAULT_PER_PAGE ? undefined : next,
-                  page: undefined,
-                }),
+                search: (prev) => ({ ...prev, campaignId, page: undefined }),
               });
             }}
-          >
-            <SelectTrigger className="w-[5.5rem]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_LIST_PER_PAGE_OPTIONS.map((option) => (
-                <SelectItem key={option} value={String(option)}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          />
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Published from</span>
+            <Input
+              type="date"
+              value={search.publishedFrom ?? ""}
+              onChange={(event) => {
+                const publishedFrom = optionalDate(event.target.value);
+                void navigate({
+                  search: (prev) => ({ ...prev, publishedFrom, page: undefined }),
+                });
+              }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Published to</span>
+            <Input
+              type="date"
+              value={search.publishedTo ?? ""}
+              onChange={(event) => {
+                const publishedTo = optionalDate(event.target.value);
+                void navigate({
+                  search: (prev) => ({ ...prev, publishedTo, page: undefined }),
+                });
+              }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <span className="text-xs font-medium text-muted-foreground">Per page</span>
+            <Select
+              value={String(perPage)}
+              onValueChange={(value) => {
+                const next = normalizePerPage(value);
+                void navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    perPage: next === DEFAULT_PER_PAGE ? undefined : next,
+                    page: undefined,
+                  }),
+                });
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PAGE_LIST_PER_PAGE_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={String(option)}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-end sm:col-span-2 lg:col-span-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={!hasFilters}
+              onClick={resetFilters}
+            >
+              Reset filters
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -314,6 +492,14 @@ function AdminPagesList() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-10 pr-0">
+                <Checkbox
+                  checked={allOnPageSelected ? true : someOnPageSelected ? "indeterminate" : false}
+                  onCheckedChange={(value) => toggleSelectAllOnPage(value === true)}
+                  aria-label="Select all on this page"
+                  disabled={pages.length === 0}
+                />
+              </TableHead>
               <SortableHead
                 label="ID"
                 field="id"
@@ -322,6 +508,8 @@ function AdminPagesList() {
                 onSort={toggleSort}
               />
               <TableHead>First Name</TableHead>
+              <TableHead>Last Name</TableHead>
+              <TableHead>Company</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Territory</TableHead>
               <TableHead>Owner</TableHead>
@@ -346,15 +534,26 @@ function AdminPagesList() {
           <TableBody>
             {pages.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={12} className="py-8 text-center text-muted-foreground">
                   {emptyMessage}
                 </TableCell>
               </TableRow>
             ) : (
               pages.map((pageRow) => (
                 <TableRow key={pageRow.page_id}>
+                  <TableCell className="pr-0">
+                    <Checkbox
+                      checked={selectedIds.has(pageRow.page_id)}
+                      onCheckedChange={(value) =>
+                        toggleRowSelected(pageRow.page_id, value === true)
+                      }
+                      aria-label={`Select page #${pageRow.page_id}`}
+                    />
+                  </TableCell>
                   <TableCell>{pageRow.page_id}</TableCell>
                   <TableCell>{pageRow.first_name || "—"}</TableCell>
+                  <TableCell>{pageRow.last_name || "—"}</TableCell>
+                  <TableCell>{pageRow.company || "—"}</TableCell>
                   <TableCell>{pageRow.slug || "—"}</TableCell>
                   <TableCell>{pageRow.territory_name || "—"}</TableCell>
                   <TableCell>{pageRow.owner_name || "—"}</TableCell>
@@ -460,6 +659,15 @@ function AdminPagesList() {
           if (!open) setVisitsPageId(null);
         }}
       />
+      <PageXlsxUploadDialog
+        open={xlsxOpen}
+        onOpenChange={setXlsxOpen}
+        territories={territories}
+        owners={owners}
+        onUploaded={async () => {
+          await router.invalidate();
+        }}
+      />
     </div>
   );
 }
@@ -509,15 +717,15 @@ function FilterSelect({
   onChange: (value: number | undefined) => void;
 }) {
   return (
-    <div className="space-y-1">
-      <span className="text-xs text-muted-foreground">{label}</span>
+    <div className="space-y-1.5">
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <Select
         value={value != null ? String(value) : ALL_VALUE}
         onValueChange={(next) => {
           onChange(next === ALL_VALUE ? undefined : Number(next));
         }}
       >
-        <SelectTrigger className="w-[9.5rem]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder={label} />
         </SelectTrigger>
         <SelectContent>

@@ -1,0 +1,2 @@
+ALTER TABLE page ADD COLUMN last_name TEXT;
+ALTER TABLE page ADD COLUMN company TEXT;

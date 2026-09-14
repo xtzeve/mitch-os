@@ -186,7 +186,7 @@ export function PageForm({
         <div className="min-w-0 flex-1 space-y-4">
           {activeTab === "general" ? (
             <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">
                     First Name <span className="text-destructive">*</span>
@@ -214,6 +214,26 @@ export function PageForm({
                   {fieldErrors.first_name ? (
                     <p className="text-sm text-destructive">{fieldErrors.first_name}</p>
                   ) : null}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="last_name">Last Name</Label>
+                  <Input
+                    id="last_name"
+                    value={form.last_name}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, last_name: event.target.value }))
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company</Label>
+                  <Input
+                    id="company"
+                    value={form.company}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, company: event.target.value }))
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="slug">
@@ -468,6 +488,8 @@ function CatalogSelect({
 export function emptyFormData(): PageFormData {
   return {
     first_name: "",
+    last_name: "",
+    company: "",
     slug: "",
     territory_id: null,
     owner_id: null,

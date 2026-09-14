@@ -2,10 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { setResponseStatus } from "@tanstack/react-start/server";
 import {
   createPageFromForm,
+  createPagesFromXlsxImport,
   deleteEmptyDraftPages,
   deletePage,
   getPageById,
   getPublishedPageBySlug,
+  listExistingPageSlugs,
   listPages,
   pageToFormData,
   savePage,
@@ -57,6 +59,8 @@ export const fetchPages = createServerFn({ method: "GET" })
       search?: string;
       page?: number;
       perPage?: number;
+      lastName?: string | null;
+      company?: string | null;
       territoryId?: number | null;
       ownerId?: number | null;
       campaignId?: number | null;
@@ -325,4 +329,128 @@ export const previewLanding = createServerFn({ method: "GET" })
       published: page.published,
       ...description,
     };
+  });
+
+type XlsxImportRequest = {
+  territoryId: number;
+  ownerId: number;
+  rows: Array<{
+    rowNumber: number;
+    first_name: string;
+    last_name: string;
+    company: string;
+    campaign: string;
+    url: string;
+  }>;
+};
+
+async function prepareXlsxImport(data: XlsxImportRequest) {
+  const territoryId = Number(data.territoryId);
+  const ownerId = Number(data.ownerId);
+  if (!Number.isFinite(territoryId) || territoryId <= 0) {
+    throw new Error("Territory is required.");
+  }
+  if (!Number.isFinite(ownerId) || ownerId <= 0) {
+    throw new Error("Owner is required.");
+  }
+  if (!Array.isArray(data.rows) || data.rows.length === 0) {
+    throw new Error("No data rows found in the file.");
+  }
+
+  const [existingSlugs, territories, owners, campaigns] = await Promise.all([
+    listExistingPageSlugs(),
+    listCatalog("territory"),
+    listCatalog("owner"),
+    listCatalog("campaign"),
+  ]);
+  if (!territories.some((item) => item.id === territoryId)) {
+    throw new Error("Selected Territory was not found.");
+  }
+  if (!owners.some((item) => item.id === ownerId)) {
+    throw new Error("Selected Owner was not found.");
+  }
+
+  const campaignNameToId = new Map(
+    campaigns.map((item) => [item.name.trim().toLowerCase(), item.id]),
+  );
+
+  const { resolvePageXlsxRows } = await import("@/lib/page-xlsx-import");
+  const resolved = resolvePageXlsxRows({
+    rows: data.rows,
+    existingSlugs,
+    campaignNameToId,
+  });
+
+  return { territoryId, ownerId, resolved };
+}
+
+export const checkPageXlsxImportAction = createServerFn({ method: "POST" })
+  .inputValidator((data: XlsxImportRequest) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    try {
+      const { resolved } = await prepareXlsxImport(data);
+      return {
+        success: true as const,
+        rows: resolved,
+        okCount: resolved.filter((row) => row.status === "ok").length,
+        duplicateCount: resolved.filter((row) => row.status === "duplicate").length,
+        invalidCount: resolved.filter((row) => row.status === "invalid").length,
+      };
+    } catch (error) {
+      setResponseStatus(400);
+      return {
+        success: false as const,
+        error: error instanceof Error ? error.message : "Failed to check file.",
+      };
+    }
+  });
+
+export const uploadPageXlsxImportAction = createServerFn({ method: "POST" })
+  .inputValidator((data: XlsxImportRequest) => data)
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    try {
+      const { territoryId, ownerId, resolved } = await prepareXlsxImport(data);
+      const okRows = resolved.filter((row) => row.status === "ok");
+
+      const { createdIds, failed } = await createPagesFromXlsxImport({
+        territoryId,
+        ownerId,
+        rows: okRows.map((row) => ({
+          rowNumber: row.rowNumber,
+          first_name: row.first_name,
+          last_name: row.last_name,
+          company: row.company,
+          slug: row.slug,
+          campaign_id: row.campaign_id,
+        })),
+      });
+
+      const failedByRow = new Map(failed.map((item) => [item.rowNumber, item.reason]));
+      const rows = resolved.map((row) => {
+        const reason = failedByRow.get(row.rowNumber);
+        if (!reason) return row;
+        return {
+          ...row,
+          status: "invalid" as const,
+          reason,
+        };
+      });
+      const skipped = rows.filter((row) => row.status !== "ok");
+
+      return {
+        success: true as const,
+        createdCount: createdIds.length,
+        createdIds,
+        skipped,
+        rows,
+      };
+    } catch (error) {
+      setResponseStatus(400);
+      return {
+        success: false as const,
+        error: error instanceof Error ? error.message : "Failed to upload file.",
+      };
+    }
   });

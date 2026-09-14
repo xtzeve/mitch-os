@@ -26,6 +26,8 @@ export type PageDescriptionRecord = PageDescriptionFields & {
 export type PageRecord = {
   page_id: number;
   first_name: string;
+  last_name: string | null;
+  company: string | null;
   slug: string;
   territory_id: number | null;
   owner_id: number | null;
@@ -54,7 +56,7 @@ export type LanguageRecord = {
 export const LANGUAGE_EN = 1;
 export const LANGUAGE_DE = 2;
 
-export const PAGE_LIST_PER_PAGE_OPTIONS = [10, 20, 50, 100] as const;
+export const PAGE_LIST_PER_PAGE_OPTIONS = [10, 20, 50, 100, 200] as const;
 export type PageListPerPage = (typeof PAGE_LIST_PER_PAGE_OPTIONS)[number];
 
 export const PAGE_LIST_SORT_FIELDS = ["id", "published", "visited"] as const;
@@ -99,6 +101,8 @@ export type PageFormDescription = PageDescriptionFields;
 
 export type PageFormData = {
   first_name: string;
+  last_name: string;
+  company: string;
   slug: string;
   territory_id: number | null;
   owner_id: number | null;

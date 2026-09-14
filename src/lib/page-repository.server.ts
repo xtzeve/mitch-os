@@ -64,6 +64,8 @@ function mapPage(row: Record<string, unknown>): PageRecord {
   return {
     page_id: Number(row.page_id),
     first_name: String(row.first_name ?? ""),
+    last_name: nullableString(row.last_name),
+    company: nullableString(row.company),
     slug: String(row.slug ?? ""),
     territory_id: nullableId(row.territory_id),
     owner_id: nullableId(row.owner_id),
@@ -85,6 +87,8 @@ export type ListPagesParams = {
   search?: string;
   page?: number;
   perPage?: number;
+  lastName?: string | null;
+  company?: string | null;
   territoryId?: number | null;
   ownerId?: number | null;
   campaignId?: number | null;
@@ -143,6 +147,8 @@ export async function listPages(params: ListPagesParams = {}): Promise<ListPages
   const search = (params.search ?? "").trim();
   const perPage = normalizePerPage(params.perPage);
   let page = Math.max(1, Math.floor(params.page ?? 1) || 1);
+  const lastName = (params.lastName ?? "").trim();
+  const company = (params.company ?? "").trim();
   const territoryId = nullableId(params.territoryId);
   const ownerId = nullableId(params.ownerId);
   const campaignId = nullableId(params.campaignId);
@@ -155,9 +161,22 @@ export async function listPages(params: ListPagesParams = {}): Promise<ListPages
   const filterBinds: Array<string | number> = [];
 
   if (search) {
-    whereParts.push("(p.first_name LIKE ? COLLATE NOCASE OR p.slug LIKE ? COLLATE NOCASE)");
+    whereParts.push(
+      `(p.first_name LIKE ? COLLATE NOCASE
+        OR p.last_name LIKE ? COLLATE NOCASE
+        OR p.company LIKE ? COLLATE NOCASE
+        OR p.slug LIKE ? COLLATE NOCASE)`,
+    );
     const like = `%${search}%`;
-    filterBinds.push(like, like);
+    filterBinds.push(like, like, like, like);
+  }
+  if (lastName) {
+    whereParts.push("p.last_name LIKE ? COLLATE NOCASE");
+    filterBinds.push(`%${lastName}%`);
+  }
+  if (company) {
+    whereParts.push("p.company LIKE ? COLLATE NOCASE");
+    filterBinds.push(`%${company}%`);
   }
   if (territoryId != null) {
     whereParts.push("p.territory_id = ?");
@@ -338,6 +357,76 @@ export async function isSlugTaken(slug: string, excludePageId?: number) {
   return Boolean(row);
 }
 
+export async function listExistingPageSlugs(): Promise<string[]> {
+  const db = await getDb();
+  const result = await db.prepare("SELECT slug FROM page").all<{ slug: string }>();
+  return (result.results ?? []).map((row) => String(row.slug ?? "")).filter(Boolean);
+}
+
+function publishedDateUtcPlus2(): string {
+  // Etc/GMT-2 is fixed UTC+2 (POSIX sign is inverted).
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Etc/GMT-2",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+export async function createPagesFromXlsxImport(input: {
+  rows: Array<{
+    rowNumber: number;
+    first_name: string;
+    last_name: string;
+    company: string;
+    slug: string;
+    campaign_id: number | null;
+  }>;
+  territoryId: number;
+  ownerId: number;
+}): Promise<{
+  createdIds: number[];
+  failed: Array<{ rowNumber: number; slug: string; reason: string }>;
+}> {
+  const territoryId = nullableId(input.territoryId);
+  const ownerId = nullableId(input.ownerId);
+  if (territoryId == null || ownerId == null) {
+    throw new Error("Territory and Owner are required.");
+  }
+
+  const published = publishedDateUtcPlus2();
+  const createdIds: number[] = [];
+  const failed: Array<{ rowNumber: number; slug: string; reason: string }> = [];
+
+  for (const row of input.rows) {
+    try {
+      const pageId = await createPageFromForm({
+        first_name: row.first_name,
+        last_name: row.last_name,
+        company: row.company,
+        slug: row.slug,
+        territory_id: territoryId,
+        owner_id: ownerId,
+        campaign_id: row.campaign_id,
+        published,
+        page_description: {
+          [LANGUAGE_EN]: { ...DEFAULT_DESCRIPTIONS_BY_LANGUAGE[LANGUAGE_EN] },
+          [LANGUAGE_DE]: { ...DEFAULT_DESCRIPTIONS_BY_LANGUAGE[LANGUAGE_DE] },
+        },
+      });
+      createdIds.push(pageId);
+    } catch (error) {
+      failed.push({
+        rowNumber: row.rowNumber,
+        slug: row.slug,
+        reason: error instanceof Error ? error.message : "Failed to create page.",
+      });
+    }
+  }
+
+  return { createdIds, failed };
+}
+
 function validatePageFormData(data: PageFormData) {
   const firstNameError = validateFirstName(data.first_name);
   if (firstNameError) throw new Error(firstNameError);
@@ -355,16 +444,20 @@ export async function createPageFromForm(data: PageFormData): Promise<number> {
   }
 
   const published = normalizeDateOnly(data.published);
+  const lastName = data.last_name.trim() || null;
+  const company = data.company.trim() || null;
   const db = await getDb();
   const insert = await db
     .prepare(
       `INSERT INTO page (
-         first_name, slug, territory_id, owner_id, campaign_id, published,
+         first_name, last_name, company, slug, territory_id, owner_id, campaign_id, published,
          date_added, date_modified
-       ) VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
     )
     .bind(
       data.first_name.trim(),
+      lastName,
+      company,
       normalizedSlug,
       data.territory_id,
       data.owner_id,
@@ -405,12 +498,16 @@ export async function savePage(pageId: number, data: PageFormData) {
   }
 
   const published = normalizeDateOnly(data.published);
+  const lastName = data.last_name.trim() || null;
+  const company = data.company.trim() || null;
   const db = await getDb();
 
   await db
     .prepare(
       `UPDATE page
        SET first_name = ?,
+           last_name = ?,
+           company = ?,
            slug = ?,
            territory_id = ?,
            owner_id = ?,
@@ -421,6 +518,8 @@ export async function savePage(pageId: number, data: PageFormData) {
     )
     .bind(
       data.first_name.trim(),
+      lastName,
+      company,
       normalizedSlug,
       data.territory_id,
       data.owner_id,
@@ -480,6 +579,8 @@ export async function deletePage(pageId: number) {
 export function pageToFormData(page: PageWithDescriptions): PageFormData {
   return {
     first_name: page.first_name,
+    last_name: page.last_name ?? "",
+    company: page.company ?? "",
     slug: page.slug,
     territory_id: page.territory_id,
     owner_id: page.owner_id,
