@@ -77,6 +77,7 @@ function Reveal({
 }
 
 function Hero({ copy }: { copy: HomeCopy }) {
+  const [p1, p2, p3] = copy.hero.paragraphs;
   return (
     <section id="hero" className="relative overflow-hidden">
       <div
@@ -99,27 +100,20 @@ function Hero({ copy }: { copy: HomeCopy }) {
         </Reveal>
         <Reveal
           as="p"
-          className="mt-8 text-[clamp(1.125rem,2vw,1.5rem)] leading-relaxed max-w-4xl text-[color:var(--offblack)]/90"
-          delay={100}
+          className="mt-6 text-[clamp(1.25rem,2.4vw,1.75rem)] leading-snug max-w-4xl font-display italic text-[color:var(--burnt)]"
+          delay={80}
         >
           {copy.hero.subHeadline}
         </Reveal>
-        <Reveal
-          as="p"
-          className="mt-8 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-relaxed max-w-4xl italic font-display text-[color:var(--burnt)]"
-          delay={150}
-        >
-          {copy.hero.body}
+        <Reveal className="mt-10 max-w-4xl space-y-5 text-lg md:text-xl leading-relaxed text-[color:var(--offblack)]/85" delay={120}>
+          <p>{p1}</p>
+          <p>{p2}</p>
+          <p>{p3}</p>
         </Reveal>
-        <Reveal className="mt-10 grid gap-10 md:grid-cols-[1.4fr_1fr] items-end">
-          <p className="text-lg md:text-xl leading-relaxed text-[color:var(--offblack)]/85 max-w-2xl">
-            {copy.hero.tagline}
-          </p>
-          <div className="md:text-right">
-            <BookCallButton className="inline-flex items-center gap-2 px-6 py-3.5 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm text-base font-medium">
-              {copy.hero.cta} <span aria-hidden>→</span>
-            </BookCallButton>
-          </div>
+        <Reveal className="mt-10" delay={160}>
+          <BookCallButton className="inline-flex items-center gap-2 px-6 py-3.5 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm text-base font-medium">
+            {copy.hero.cta} <span aria-hidden>→</span>
+          </BookCallButton>
         </Reveal>
       </div>
       <div className="rule" />
@@ -128,54 +122,41 @@ function Hero({ copy }: { copy: HomeCopy }) {
 }
 
 function WhatSection({ copy }: { copy: HomeCopy }) {
+  const { what } = copy;
   return (
     <section id="what" className="py-24 md:py-36">
       <div className="container-mitch">
         <Reveal>
-          <p className="eyebrow">{copy.what.eyebrow}</p>
-          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">{copy.what.headline}</h2>
-          <ol className="mt-10 max-w-3xl divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
-            {copy.what.listItems.map((item, i) => (
-              <li
-                key={item}
-                className="flex items-baseline gap-6 py-5 text-[clamp(1.25rem,2.2vw,1.875rem)] font-display"
-              >
-                <span className="text-[color:var(--burnt)] text-base tracking-widest">
-                  0{i + 1}
-                </span>
-                <span>{item}</span>
-              </li>
+          <p className="eyebrow">{what.eyebrow}</p>
+          <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">{what.headline}</h2>
+          <div className="mt-10 max-w-4xl space-y-5 text-lg leading-relaxed text-[color:var(--offblack)]/85">
+            {what.beforeStages.map((para) => (
+              <p key={para}>{para}</p>
             ))}
-          </ol>
+          </div>
         </Reveal>
 
-        <Reveal className="mt-12 text-[color:var(--offblack)]/85">
-          <p className="text-lg leading-relaxed max-w-4xl">{copy.what.body}</p>
+        <Reveal className="mt-16 md:mt-20">
+          <AccaMechanismBlock tone="light" />
         </Reveal>
 
-        <Reveal className="my-20 md:my-28 text-center">
-          <p className="font-display italic text-[clamp(1.75rem,4.5vw,3.5rem)] leading-tight tracking-tight max-w-4xl mx-auto">
-            {copy.what.scaleLine}
+        <Reveal className="mt-16 max-w-4xl space-y-5 text-lg leading-relaxed text-[color:var(--offblack)]/85">
+          {what.afterStages.map((para) => (
+            <p key={para}>{para}</p>
+          ))}
+        </Reveal>
+
+        <Reveal className="mt-16 md:mt-20 text-center">
+          <p className="font-display italic text-[clamp(1.75rem,4.5vw,3.25rem)] leading-tight tracking-tight max-w-3xl mx-auto text-[color:var(--burnt)]">
+            {what.emphasis}
           </p>
         </Reveal>
 
-        <p className="eyebrow mb-6">{copy.what.deliverablesEyebrow}</p>
-        <div className="grid gap-px bg-[color:var(--border)] md:grid-cols-2 border border-[color:var(--border)]">
-          {copy.what.deliverables.map((d, i) => (
-            <Reveal
-              key={i}
-              as="article"
-              delay={i * 80}
-              className="bg-[color:var(--warmwhite)] p-7 md:p-9 flex flex-col gap-4"
-            >
-              <span className="font-display text-4xl md:text-5xl text-[color:var(--burnt)] leading-none">
-                0{i + 1}
-              </span>
-              <h3 className="font-display text-2xl">{d.title}</h3>
-              <p className="text-[color:var(--offblack)]/80 leading-relaxed">{d.body}</p>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal className="mt-10 text-center">
+          <p className="font-display text-[clamp(1.35rem,3vw,2.25rem)] leading-snug tracking-tight max-w-3xl mx-auto">
+            {what.closing}
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -193,25 +174,26 @@ function WhySection({ copy }: { copy: HomeCopy }) {
           <p className="eyebrow" style={{ color: "var(--burnt)" }}>
             {why.eyebrow}
           </p>
-          <div className="mt-8">
-            <AccaMechanismBlock kicker={why.kicker} />
-          </div>
           <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl text-[color:var(--warmwhite)]">
             {why.headline}
           </h2>
-          <div className="mt-10 grid max-w-5xl gap-8 text-[color:var(--warmwhite)]/80 md:grid-cols-2">
-            <p className="text-lg leading-relaxed">{why.paragraph1}</p>
-            <p className="text-lg leading-relaxed">{why.paragraph2}</p>
+          <p className="mt-5 text-[clamp(1.15rem,2.2vw,1.5rem)] max-w-3xl text-[color:var(--warmwhite)]/75 leading-snug">
+            {why.subHeadline}
+          </p>
+          <div className="mt-10 max-w-4xl space-y-5 text-lg leading-relaxed text-[color:var(--warmwhite)]/80">
+            {why.paragraphs.map((para) => (
+              <p key={para}>{para}</p>
+            ))}
           </div>
-          <p className="mt-8 max-w-3xl text-sm leading-relaxed text-[color:var(--warmwhite)]/55">
-            {why.caption}
+          <p className="mt-10 font-display text-2xl md:text-3xl text-[color:var(--burnt)]">
+            {why.cardsLead}
           </p>
         </Reveal>
 
-        <div className="mt-16 grid gap-px bg-[color:var(--warmwhite)]/10 md:grid-cols-3 border border-[color:var(--warmwhite)]/10">
+        <div className="mt-12 grid gap-px bg-[color:var(--warmwhite)]/10 md:grid-cols-3 border border-[color:var(--warmwhite)]/10">
           {why.cards.map((r, i) => (
             <Reveal
-              key={i}
+              key={r.title}
               as="article"
               delay={i * 80}
               className="bg-[color:var(--offblack)] p-7 md:p-9 flex flex-col gap-4"
@@ -226,6 +208,17 @@ function WhySection({ copy }: { copy: HomeCopy }) {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-16 max-w-3xl space-y-4 text-[color:var(--warmwhite)]/80">
+          {why.closing.map((para) => (
+            <p key={para} className="text-lg leading-relaxed">
+              {para}
+            </p>
+          ))}
+          <p className="pt-4 font-display italic text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight text-[color:var(--burnt)]">
+            {why.closingEmphasis}
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -239,65 +232,49 @@ function HowSection({ copy }: { copy: HomeCopy }) {
         <Reveal>
           <p className="eyebrow">{how.eyebrow}</p>
           <h2 className="mt-5 text-[clamp(2rem,4.6vw,3.75rem)] max-w-4xl">{how.headline}</h2>
-          <p className="mt-10 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-snug max-w-4xl italic font-display text-[color:var(--burnt)]">
-            {how.opening}
+          <div className="mt-10 max-w-4xl space-y-5 text-lg leading-relaxed text-[color:var(--offblack)]/85">
+            {how.opening.map((para) => (
+              <p key={para}>{para}</p>
+            ))}
+          </div>
+          <p className="mt-12 font-display italic text-[clamp(1.5rem,3vw,2.25rem)] leading-snug max-w-4xl text-[color:var(--burnt)]">
+            {how.emphasis}
           </p>
-          <p className="mt-10 text-[clamp(1.25rem,2.5vw,1.75rem)] leading-snug max-w-4xl italic font-display text-[color:var(--burnt)]">
-            {how.paragraph2}
-          </p>
-        </Reveal>
-
-        <ol className="mt-16 grid gap-px bg-[color:var(--border)] border border-[color:var(--border)]">
-          {how.steps.map((s, i) => (
-            <Reveal
-              key={s.n}
-              as="li"
-              delay={i * 60}
-              className="bg-[color:var(--warmwhite)] p-8 md:p-12 grid gap-6 md:grid-cols-[180px_1fr] items-start"
-            >
-              <div className="flex md:flex-col items-baseline md:items-start gap-4 md:gap-2">
-                <span className="font-display text-5xl md:text-6xl text-[color:var(--burnt)] leading-none">
-                  {s.n}
-                </span>
-                <span className="eyebrow">
-                  {how.phaseLabel} {i + 1}
-                </span>
-              </div>
-              <div>
-                <h3 className="font-display text-2xl md:text-3xl">{s.title}</h3>
-                <p className="mt-3 text-[color:var(--offblack)]/80 leading-relaxed max-w-3xl">
-                  {s.body}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
-
-        <Reveal className="mt-16 overflow-x-auto">
-          <div className="flex items-center gap-3 min-w-max py-4">
-            {how.flow.map((step, i) => (
-              <div key={step} className="flex items-center gap-3">
-                <div
-                  className={`px-4 py-2 rounded-sm text-sm whitespace-nowrap border ${
-                    i === how.flow.length - 1
-                      ? "bg-[color:var(--burnt)] text-[color:var(--warmwhite)] border-[color:var(--burnt)]"
-                      : "border-[color:var(--offblack)]/30 text-[color:var(--offblack)]"
-                  }`}
-                >
-                  {step}
-                </div>
-                {i < how.flow.length - 1 && (
-                  <span aria-hidden className="text-[color:var(--muted-foreground)]">
-                    ──→
-                  </span>
-                )}
-              </div>
+          <div className="mt-10 max-w-4xl space-y-5 text-lg leading-relaxed text-[color:var(--offblack)]/85">
+            {how.continuing.map((para) => (
+              <p key={para}>{para}</p>
             ))}
           </div>
         </Reveal>
 
-        <Reveal className="mt-16 max-w-3xl">
-          <p className="font-display italic text-2xl md:text-3xl leading-snug">{how.closingLine}</p>
+        <div className="mt-16 grid gap-px bg-[color:var(--border)] border border-[color:var(--border)] md:grid-cols-2">
+          {how.stages.map((stage, i) => (
+            <Reveal
+              key={stage.title}
+              as="article"
+              delay={i * 70}
+              className="bg-[color:var(--warmwhite)] p-7 md:p-9 flex flex-col gap-4"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-display text-2xl md:text-3xl">{stage.title}</h3>
+                <span
+                  className={`eyebrow ${
+                    stage.variant === "team" ? "text-[color:var(--offblack)]/55" : "text-[color:var(--burnt)]"
+                  }`}
+                >
+                  {stage.variant === "team" ? "Your team" : "MITCH"}
+                </span>
+              </div>
+              <p className="text-[color:var(--offblack)]/80 leading-relaxed">{stage.body}</p>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-16 max-w-3xl space-y-3">
+          <p className="font-display italic text-2xl md:text-3xl leading-snug">{how.closingLead}</p>
+          <p className="font-display text-2xl md:text-3xl leading-snug text-[color:var(--burnt)]">
+            {how.closingAccent}
+          </p>
         </Reveal>
       </div>
     </section>
@@ -311,15 +288,28 @@ function ClosingSection({ copy }: { copy: HomeCopy }) {
       <div className="container-mitch">
         <Reveal className="max-w-4xl">
           <p className="eyebrow">{closing.eyebrow}</p>
-          <h2 className="mt-5 text-[clamp(2.25rem,5.5vw,4.5rem)]">
-            {closing.headlineLead}{" "}
-            <span className="italic font-display text-[color:var(--burnt)]">
-              {closing.headlineAccent}
-            </span>
+          <h2 className="mt-5 text-[clamp(2.25rem,5.5vw,4.25rem)] leading-[1.08]">
+            {closing.headline}
           </h2>
-          <p className="mt-8 text-lg md:text-xl text-[color:var(--offblack)]/80 max-w-2xl leading-relaxed">
-            {closing.body}
-          </p>
+          <div className="mt-8 max-w-2xl space-y-4 text-lg md:text-xl text-[color:var(--offblack)]/80 leading-relaxed">
+            {closing.body.map((para) => (
+              <p key={para}>{para}</p>
+            ))}
+          </div>
+          <div className="mt-12 space-y-2">
+            {closing.closingLines.map((line, i) => (
+              <p
+                key={line}
+                className={`font-display text-[clamp(1.5rem,3vw,2.5rem)] leading-tight ${
+                  i === closing.closingLines.length - 1
+                    ? "italic text-[color:var(--burnt)]"
+                    : ""
+                }`}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <BookCallButton className="inline-flex items-center gap-2 px-7 py-4 bg-[color:var(--offblack)] text-[color:var(--warmwhite)] hover:bg-[color:var(--burnt)] transition-colors rounded-sm font-medium text-base">
               {closing.cta} <span aria-hidden>→</span>

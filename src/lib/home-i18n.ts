@@ -16,43 +16,42 @@ export type HomeCopy = {
     kicker: string;
     h1: string;
     subHeadline: string;
-    body: string;
-    tagline: string;
+    paragraphs: [string, string, string];
     cta: string;
   };
   what: {
     eyebrow: string;
     headline: string;
-    listItems: [string, string, string];
-    body: string;
-    scaleLine: string;
-    deliverablesEyebrow: string;
-    deliverables: { title: string; body: string }[];
+    beforeStages: [string, string, string];
+    afterStages: [string, string, string];
+    emphasis: string;
+    closing: string;
   };
   why: {
     eyebrow: string;
-    kicker: string;
     headline: string;
-    paragraph1: string;
-    paragraph2: string;
-    caption: string;
+    subHeadline: string;
+    paragraphs: [string, string, string];
+    cardsLead: string;
     cards: { title: string; body: string }[];
+    closing: [string, string];
+    closingEmphasis: string;
   };
   how: {
     eyebrow: string;
     headline: string;
-    opening: string;
-    paragraph2: string;
-    phaseLabel: string;
-    steps: { n: string; title: string; body: string }[];
-    flow: string[];
-    closingLine: string;
+    opening: [string, string, string];
+    emphasis: string;
+    continuing: [string, string, string, string];
+    stages: { title: string; body: string; variant: "mitch" | "team" }[];
+    closingLead: string;
+    closingAccent: string;
   };
   closing: {
     eyebrow: string;
-    headlineLead: string;
-    headlineAccent: string;
-    body: string;
+    headline: string;
+    body: [string, string];
+    closingLines: [string, string];
     cta: string;
     ctaNote: string;
   };
@@ -72,10 +71,10 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     meta: {
       title: "MITCH OS — The pipeline that converts itself.",
       description:
-        "MITCH OS is the thinking layer for outbound. Sourced dossier, decision-maker profile, trigger, and ready-to-send multichannel campaign for every account.",
+        "MITCH OS turns your entire addressable market into an ongoing new logo acquisition program — work your whole market without adding headcount.",
       ogTitle: "MITCH OS — The pipeline that converts itself.",
       ogDescription:
-        "Outbound intelligence at any scale. A complete, sourced, ready-to-execute campaign for every account.",
+        "MITCH OS turns your entire addressable market into an ongoing new logo acquisition program — work your whole market without adding headcount.",
     },
     nav: [
       { href: "#what", label: "What" },
@@ -85,112 +84,115 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     ],
     headerCta: "Book a call",
     hero: {
-      kicker: "MITCH OS · Outbound Intelligence",
+      kicker: "MITCH OS",
       h1: "The pipeline that converts itself.",
-      subHeadline:
-        "Outbound has always forced a choice between quality and quantity. That tension is over.",
-      body: "Before your team reaches out, MITCH creates a granular profile of decision makers, identifies current triggers, produces a multichannel campaign with ready to send content, and builds intel on each account.",
-      tagline: "For outbound sales teams and leaders, this is the new start line.",
+      subHeadline: "Industrialise new business acquisition.",
+      paragraphs: [
+        "MITCH turns your entire addressable market into an ongoing new logo acquisition program.",
+        "He finds the companies you want to win, understands what matters to them, identifies the people you need to reach and creates the reason to start a conversation.",
+        "He does this across your market without the human capacity constraint that limits conventional prospecting.",
+      ],
       cta: "Book a call",
     },
     what: {
       eyebrow: "01 — What",
-      headline: "Good outbound depends on three things.",
-      listItems: ["Knowing the account", "Understanding the person", "Choosing the right moment"],
-      body: "This is exactly where the quality/quantity tension bites. Nobody has the hours to do this properly at scale, so it gets skipped, guessed at, or faked. MITCH finds everything about an account you wished you knew and never had time to dig up — continuously mapping the current state of each target company, surfacing the stakeholders, detecting actionable timing signals, and assembling coordinated outreach sequences with tailored messaging for every channel.",
-      scaleLine:
-        "Every account arrives worked — researched, sequenced, ready to send — whether the list has fifty names or fifty thousand.",
-      deliverablesEyebrow: "What MITCH OS gives you for every account",
-      deliverables: [
-        {
-          title: "The company as it is right now",
-          body: "Not only as their website describes it. What is driving the business, where it is heading, and why your offer is relevant.",
-        },
-        {
-          title: "Who controls the decision",
-          body: "What they say in public, how they frame the issues, and what motivates them as business people.",
-        },
-        {
-          title: "The trigger",
-          body: "The specific reason this company is timely to contact now, based on real events.",
-        },
-        {
-          title: "Campaign and content",
-          body: "A multichannel sequence built around a coordinated narrative, with touchpoints written for the specific person receiving them.",
-        },
+      headline: "MITCH turns your market into a permanent source of new business.",
+      beforeStages: [
+        "Every company you want to sell to is somewhere in a buying journey.",
+        "They need to become aware of you. They need to understand why you are relevant. They need a reason to believe you can solve their problem. Then they can take action.",
+        "This is the same journey every time.",
       ],
+      afterStages: [
+        "MITCH industrialises the first three stages so your sales team can focus on the fourth.",
+        "He works across your entire addressable market, finding the companies, people and circumstances that create an opportunity to sell.",
+        "Your brand enters the buying journey before the prospect is actively looking for you.",
+      ],
+      emphasis: "And MITCH stays there.",
+      closing: "This is not a four-week campaign. It is an ongoing new logo acquisition program.",
     },
     why: {
       eyebrow: "02 — Why",
-      kicker: "The stages never change.",
-      headline: "No limit on awareness and comprehension. For less than you're already spending.",
-      paragraph1:
-        "Every account has to become aware of you and understand why you matter before anyone can sell to them. Today, a person does that by hand — which is why you can only reach as many accounts as you have hours for. MITCH does both automatically, for every account, at the same depth at account one as at account fifty thousand.",
-      paragraph2:
-        "Buy Awareness and Comprehension from MITCH — at scale, at quality, at a cost never possible before. Your people work Conviction and Action only.",
-      caption:
-        "Existing clients already run MITCH at this volume — some book dossiers like this one by the thousand, on a different account every time.",
+      headline: "You are going to prospect your market anyway.",
+      subHeadline: "The question is how much of it you can afford to work.",
+      paragraphs: [
+        "Traditional prospecting is constrained by people, time and cost. Your team can only research and contact as many companies as it has capacity to handle.",
+        "That creates a choice.",
+        "Work more accounts and accept less preparation and lower quality, or maintain quality and accept that most of your market will never be properly worked.",
+      ],
+      cardsLead: "MITCH removes that constraint.",
       cards: [
         {
-          title: "No variance",
-          body: "The intelligence applied to every account is identical in depth and rigour, whether your list has fifty names or fifty thousand.",
+          title: "Expand your market",
+          body: "The number of companies you can actively pursue is no longer limited by the number of people you have available to prospect them.",
         },
         {
-          title: "No ramp-up",
-          body: "No hire, no training, no three-month wait. MITCH OS is operational from day one and knows your business within minutes of being briefed.",
+          title: "Maintain quality at scale",
+          body: "Increasing the number of accounts does not mean reducing the quality of the work. MITCH applies the same standard across the market.",
         },
         {
-          title: "No ceiling",
-          body: "Your pipeline grows with your ambition. Add accounts. The system scales the thinking without scaling the cost.",
+          title: "Reduce acquisition cost",
+          body: "MITCH replaces expensive, labour-intensive prospecting with software infrastructure. You can work more of your market without adding the equivalent sales capacity.",
         },
       ],
+      closing: [
+        "The result is a different economics for new business.",
+        "You stop choosing which part of the market your team has time to work.",
+      ],
+      closingEmphasis: "You work the market.",
     },
     how: {
       eyebrow: "03 — How",
-      headline: "MITCH figures it all out on his own.",
-      opening:
-        "MITCH doesn't wait for a list. He starts by reading your website, your materials, your market position — and builds a clearer picture of your value proposition than most internal teams keep current. From that, he defines your ICP: the companies that should actually be your customers. You set the boundaries of the addressable market — geography, size, sector, whatever applies — MITCH finds everyone who fits inside them.",
-      paragraph2:
-        "Your sales organization gains aligned messaging, strategic timing, campaign coordination, and account-specific execution infrastructure before the first interaction even happens.",
-      phaseLabel: "Phase",
-      steps: [
+      headline: "MITCH applies the principles of good outbound across your entire market.",
+      opening: [
+        "You give MITCH your business, your proposition and the market you want to reach.",
+        "He builds the understanding needed to make your proposition relevant to each account.",
+        "He researches the company, the people who matter and what is happening in the business. He identifies the circumstances that create a reason to engage and uses them to build the conversation.",
+      ],
+      emphasis: "The output is not a lead list, it is a market that has been worked.",
+      continuing: [
+        "Every account has a reason to be approached. Every relevant person has been considered. Every conversation is grounded in what is actually happening in the business.",
+        "You choose how much your team is involved. MITCH can prepare campaigns for your team to review, edit and send, or run them autonomously and bring your team in when a prospect shows real interest. Over time, you can automate more of the process as confidence grows.",
+        "And because MITCH keeps working the market, the intelligence does not go stale.",
+        "A company that is not ready today may be relevant tomorrow. A new event can create a new reason to engage. MITCH keeps looking.",
+      ],
+      stages: [
         {
-          n: "01",
-          title: "Investigation",
-          body: "The system profiles every account from public sources: structure, activity, recent developments, technology, and market position. This is the foundation everything else is built on.",
+          title: "Awareness",
+          body: "Make your company known to the companies you want to win.",
+          variant: "mitch",
         },
         {
-          n: "02",
-          title: "Intel",
-          body: "From the investigation, MITCH OS extracts what matters for outreach: current priorities, the pressures the company is operating under, and the opportunities they have not yet acted on.",
+          title: "Comprehension",
+          body: "Give them a clear reason to understand why you are relevant.",
+          variant: "mitch",
         },
         {
-          n: "03",
-          title: "Triggers",
-          body: "The system identifies the specific events and signals that make this the right moment to reach out. Not a generic reason. A specific, sourced, verifiable one.",
+          title: "Conviction",
+          body: "Give your sales team the intelligence and context to create a commercial conversation.",
+          variant: "mitch",
         },
         {
-          n: "04",
-          title: "Campaign Structure",
-          body: "Based on the intelligence and the triggers, MITCH OS designs the outreach sequence: which channels, in which order, on which timeline, with which angle at each touchpoint.",
-        },
-        {
-          n: "05",
-          title: "Content",
-          body: "Every message for every touchpoint is written from the intelligence, with tone and style matched to the specific person receiving it. Ultra-specific to this company and this person, nothing templated, nothing approximate, ready to send.",
+          title: "Action",
+          body: "Your sales team takes over when human judgement matters most.",
+          variant: "team",
         },
       ],
-      flow: ["Positioning", "Investigation", "Intel", "Triggers", "Campaign Structure", "Content"],
-      closingLine:
-        "You don't hand MITCH accounts. You show him your business — and get back accounts already primed for conviction.",
+      closingLead: "MITCH turns the first three stages into infrastructure.",
+      closingAccent: "Your sales team turns them into revenue.",
     },
     closing: {
       eyebrow: "04 — Get started",
-      headlineLead: "Your team is built to close.",
-      headlineAccent: "MITCH OS builds the ground they close on.",
-      body: "Book a call and we will show you exactly what the output looks like on your accounts.",
+      headline: "Stop choosing which accounts your team has time to prospect.",
+      body: [
+        "Your entire addressable market can be active.",
+        "MITCH turns new logo acquisition from a headcount problem into a software cost.",
+      ],
+      closingLines: [
+        "Not a four-week campaign.",
+        "An ongoing program for winning new business.",
+      ],
       cta: "Book a call",
-      ctaNote: "No pitch. No pressure. Just clarity.",
+      ctaNote: "See what MITCH finds in your market.",
     },
     footer: {
       tagline: "The pipeline that converts itself. A MITCH company.",
@@ -206,10 +208,10 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     meta: {
       title: "MITCH OS — Die Pipeline, die sich selbst konvertiert.",
       description:
-        "MITCH OS ist die Intelligence-Schicht für Outbound. Quellenbasiertes Dossier, Entscheiderprofil, Trigger und versandfertige Multichannel-Kampagne für jeden Account.",
+        "MITCH OS verwandelt Ihren gesamten adressierbaren Markt in ein laufendes Programm zur Gewinnung neuer Logos — ohne zusätzliches Headcount.",
       ogTitle: "MITCH OS — Die Pipeline, die sich selbst konvertiert.",
       ogDescription:
-        "Outbound Intelligence in jedem Maßstab. Eine vollständige, quellenbasierte, sofort einsetzbare Kampagne für jeden Account.",
+        "MITCH OS verwandelt Ihren gesamten adressierbaren Markt in ein laufendes Programm zur Gewinnung neuer Logos — ohne zusätzliches Headcount.",
     },
     nav: [
       { href: "#what", label: "Was" },
@@ -219,124 +221,116 @@ export const homeCopy: Record<HomeLocale, HomeCopy> = {
     ],
     headerCta: "Gespräch buchen",
     hero: {
-      kicker: "MITCH OS · Outbound Intelligence",
+      kicker: "MITCH OS",
       h1: "Die Pipeline, die sich selbst konvertiert.",
-      subHeadline:
-        "Im Outbound musste man sich bisher zwischen Qualität und Quantität entscheiden. Diese Spannung ist vorbei.",
-      body: "Bevor Ihr Team einen Account anspricht, erstellt MITCH ein detailliertes Profil der Entscheider, identifiziert aktuelle Trigger, erstellt eine Multichannel-Kampagne mit versandfertigen Inhalten und baut Intelligence zu jedem Account auf.",
-      tagline: "Für Outbound-Vertriebsteams und Führungskräfte ist dies die neue Startlinie.",
+      subHeadline: "Neue Geschäftsakquise industrialisieren.",
+      paragraphs: [
+        "MITCH verwandelt Ihren gesamten adressierbaren Markt in ein laufendes Programm zur Gewinnung neuer Logos.",
+        "Er findet die Unternehmen, die Sie gewinnen wollen, versteht, was ihnen wichtig ist, identifiziert die Menschen, die Sie erreichen müssen, und schafft den Anlass für ein Gespräch.",
+        "Das tut er über Ihren Markt hinweg — ohne die Kapazitätsgrenze, die klassisches Prospecting einschränkt.",
+      ],
       cta: "Gespräch buchen",
     },
     what: {
       eyebrow: "01 — Was",
-      headline: "Gutes Outbound hängt von drei Dingen ab.",
-      listItems: [
-        "Den Account kennen",
-        "Die Person verstehen",
-        "Den richtigen Moment wählen",
+      headline: "MITCH macht Ihren Markt zu einer permanenten Quelle neuen Geschäfts.",
+      beforeStages: [
+        "Jedes Unternehmen, an das Sie verkaufen wollen, befindet sich irgendwo in einer Buying Journey.",
+        "Es muss auf Sie aufmerksam werden. Es muss verstehen, warum Sie relevant sind. Es braucht einen Grund zu glauben, dass Sie das Problem lösen können. Dann kann es handeln.",
+        "Diese Journey ist jedes Mal dieselbe.",
       ],
-      body: "Genau hier schlägt die Spannung zwischen Qualität und Quantität durch. Niemand hat die Zeit, dies in großem Maßstab richtig zu machen, also wird es übersprungen, geraten oder vorgetäuscht. MITCH findet alles über einen Account heraus, von dem Sie sich gewünscht hätten, es zu wissen, aber nie die Zeit hatten, es zu recherchieren — und bildet kontinuierlich den aktuellen Stand jedes Zielunternehmens ab, identifiziert die Stakeholder, erkennt verwertbare Timing-Signale und erstellt koordinierte Outreach-Sequenzen mit individuell zugeschnittenen Botschaften für jeden Kanal.",
-      scaleLine:
-        "Jeder Account kommt bereits bearbeitet an — recherchiert, sequenziert, versandbereit — unabhängig davon, ob die Liste fünfzig Namen oder fünfzigtausend umfasst.",
-      deliverablesEyebrow: "Was MITCH OS Ihnen für jeden Account liefert",
-      deliverables: [
-        {
-          title: "Das Unternehmen, wie es jetzt ist",
-          body: "Nicht nur, wie die Website es beschreibt. Was das Geschäft antreibt, wohin es geht und warum Ihr Angebot relevant ist.",
-        },
-        {
-          title: "Wer die Entscheidung trifft",
-          body: "Was sie öffentlich sagen, wie sie Themen framen und was sie als Unternehmer motiviert.",
-        },
-        {
-          title: "Der Trigger",
-          body: "Der konkrete Grund, warum dieses Unternehmen jetzt der richtige Zeitpunkt für Kontakt ist — basierend auf echten Ereignissen.",
-        },
-        {
-          title: "Kampagne und Content",
-          body: "Eine Multichannel-Sequenz um eine koordinierte Erzählung — mit Touchpoints, die für die jeweilige empfangende Person geschrieben sind.",
-        },
+      afterStages: [
+        "MITCH industrialisiert die ersten drei Stufen, damit sich Ihr Vertriebsteam auf die vierte konzentrieren kann.",
+        "Er arbeitet über Ihren gesamten adressierbaren Markt und findet Unternehmen, Menschen und Umstände, die eine Verkaufschance schaffen.",
+        "Ihre Marke tritt in die Buying Journey ein, bevor der Prospect aktiv nach Ihnen sucht.",
       ],
+      emphasis: "Und MITCH bleibt dort.",
+      closing:
+        "Das ist keine vierwöchige Kampagne. Es ist ein laufendes Programm zur Gewinnung neuer Logos.",
     },
     why: {
       eyebrow: "02 — Warum",
-      kicker: "Die Phasen ändern sich nie.",
-      headline:
-        "Keine Begrenzung bei Awareness und Comprehension. Für weniger, als Sie heute bereits ausgeben.",
-      paragraph1:
-        "Jeder Account muss zunächst auf Sie aufmerksam werden und verstehen, warum Sie relevant sind, bevor überhaupt verkauft werden kann. Heute übernimmt das ein Mensch von Hand — deshalb erreichen Sie nur so viele Accounts, wie Sie Stunden dafür haben. MITCH erledigt beides automatisch, für jeden Account, mit derselben Tiefe bei Account eins wie bei Account 50.000.",
-      paragraph2:
-        "Kaufen Sie Awareness und Comprehension von MITCH — in jedem Maßstab, in gleichbleibender Qualität, zu Kosten, die bisher nicht möglich waren. Ihr Team arbeitet nur noch an Conviction und Action.",
-      caption:
-        "Bestehende Kunden setzen MITCH bereits in diesem Umfang ein — einige erstellen Dossiers wie dieses zu Tausenden, jedes für einen anderen Account.",
+      headline: "Sie werden Ihren Markt ohnehin prospecten.",
+      subHeadline: "Die Frage ist, wie viel davon Sie sich leisten können zu bearbeiten.",
+      paragraphs: [
+        "Klassisches Prospecting ist durch Menschen, Zeit und Kosten begrenzt. Ihr Team kann nur so viele Unternehmen recherchieren und kontaktieren, wie Kapazität vorhanden ist.",
+        "Das erzwingt eine Wahl.",
+        "Mehr Accounts bearbeiten und weniger Vorbereitung sowie geringere Qualität akzeptieren — oder Qualität halten und hinnehmen, dass der Großteil Ihres Marktes nie richtig bearbeitet wird.",
+      ],
+      cardsLead: "MITCH hebt diese Begrenzung auf.",
       cards: [
         {
-          title: "Keine Varianz",
-          body: "Die auf jeden Account angewandte Intelligence ist in Tiefe und Gründlichkeit identisch — ob die Liste fünfzig oder fünfzigtausend Namen hat.",
+          title: "Ihren Markt erweitern",
+          body: "Die Zahl der Unternehmen, die Sie aktiv verfolgen können, ist nicht mehr durch die Zahl der Menschen begrenzt, die Ihnen für Prospecting zur Verfügung stehen.",
         },
         {
-          title: "Kein Ramp-up",
-          body: "Keine Einstellung, kein Training, kein dreimonatiges Warten. MITCH OS ist ab Tag eins einsatzbereit und kennt Ihr Geschäft innerhalb von Minuten nach dem Briefing.",
+          title: "Qualität bei Scale halten",
+          body: "Mehr Accounts bedeuten nicht weniger Qualität. MITCH wendet denselben Standard über den gesamten Markt an.",
         },
         {
-          title: "Keine Obergrenze",
-          body: "Ihre Pipeline wächst mit Ihren Ambitionen. Accounts hinzufügen. Das System skaliert das Denken, ohne die Kosten zu skalieren.",
+          title: "Akquisitionskosten senken",
+          body: "MITCH ersetzt teures, personalintensives Prospecting durch Software-Infrastruktur. Sie können mehr von Ihrem Markt bearbeiten, ohne die entsprechende Vertriebskapazität aufzubauen.",
         },
       ],
+      closing: [
+        "Das Ergebnis ist eine andere Ökonomie für neues Geschäft.",
+        "Sie hören auf zu wählen, welchen Teil des Marktes Ihr Team Zeit hat zu bearbeiten.",
+      ],
+      closingEmphasis: "Sie bearbeiten den Markt.",
     },
     how: {
       eyebrow: "03 — Wie",
-      headline: "MITCH klärt alles eigenständig.",
-      opening:
-        "MITCH wartet nicht auf eine Liste. Er beginnt damit, Ihre Website, Ihre Unterlagen und Ihre Marktposition zu analysieren — und entwickelt daraus ein klareres Bild Ihres Wertversprechens, als es viele interne Teams aktuell halten. Daraus definiert er Ihren ICP: die Unternehmen, die tatsächlich Ihre Kunden sein sollten. Sie setzen die Grenzen des adressierbaren Marktes — Geografie, Größe, Branche, was auch immer relevant ist — MITCH findet jeden, der innerhalb dieser Grenzen liegt.",
-      paragraph2:
-        "Ihre Vertriebsorganisation erhält abgestimmte Botschaften, strategisches Timing, Kampagnenkoordination und account-spezifische Ausführungsinfrastruktur — noch bevor die erste Interaktion stattfindet.",
-      phaseLabel: "Phase",
-      steps: [
+      headline: "MITCH wendet die Prinzipien guten Outbounds über Ihren gesamten Markt an.",
+      opening: [
+        "Sie geben MITCH Ihr Geschäft, Ihr Leistungsversprechen und den Markt, den Sie erreichen wollen.",
+        "Er baut das Verständnis auf, das nötig ist, um Ihr Angebot für jeden Account relevant zu machen.",
+        "Er recherchiert das Unternehmen, die relevanten Personen und was im Geschäft gerade passiert. Er erkennt Umstände, die einen Anlass zum Engagieren schaffen, und baut daraus die Conversation.",
+      ],
+      emphasis: "Das Ergebnis ist keine Lead-Liste — es ist ein bearbeiteter Markt.",
+      continuing: [
+        "Jeder Account hat einen Grund, angesprochen zu werden. Jede relevante Person wurde berücksichtigt. Jedes Gespräch basiert darauf, was im Unternehmen tatsächlich passiert.",
+        "Sie entscheiden, wie stark Ihr Team eingebunden ist. MITCH kann Kampagnen für Review, Edit und Versand vorbereiten — oder autonom laufen und Ihr Team holen, wenn ein Prospect echtes Interesse zeigt. Mit wachsendem Vertrauen lässt sich mehr automatisieren.",
+        "Und weil MITCH den Markt weiter bearbeitet, wird die Intelligence nicht stale.",
+        "Ein Unternehmen, das heute nicht bereit ist, kann morgen relevant sein. Ein neues Ereignis kann einen neuen Anlass schaffen. MITCH schaut weiter.",
+      ],
+      stages: [
         {
-          n: "01",
-          title: "Untersuchung",
-          body: "Das System profiliert jeden Account aus öffentlichen Quellen: Struktur, Aktivität, jüngste Entwicklungen, Technologie und Marktposition. Das ist das Fundament, auf dem alles andere aufbaut.",
+          title: "Awareness",
+          body: "Machen Sie Ihr Unternehmen bei den Unternehmen bekannt, die Sie gewinnen wollen.",
+          variant: "mitch",
         },
         {
-          n: "02",
-          title: "Intelligence",
-          body: "Aus der Untersuchung extrahiert MITCH OS, was für Outreach relevant ist: aktuelle Prioritäten, der Druck, unter dem das Unternehmen steht, und Chancen, die noch nicht genutzt wurden.",
+          title: "Comprehension",
+          body: "Geben Sie ihnen einen klaren Grund zu verstehen, warum Sie relevant sind.",
+          variant: "mitch",
         },
         {
-          n: "03",
-          title: "Trigger",
-          body: "Das System identifiziert die konkreten Ereignisse und Signale, die diesen Moment zum richtigen Zeitpunkt für Outreach machen. Kein generischer Grund. Ein spezifischer, quellenbasierter, überprüfbarer.",
+          title: "Conviction",
+          body: "Geben Sie Ihrem Vertriebsteam die Intelligence und den Kontext für ein kommerzielles Gespräch.",
+          variant: "mitch",
         },
         {
-          n: "04",
-          title: "Kampagnenstruktur",
-          body: "Basierend auf Intelligence und Triggern entwirft MITCH OS die Outreach-Sequenz: welche Kanäle, in welcher Reihenfolge, in welchem Zeitplan, mit welchem Angle an jedem Touchpoint.",
-        },
-        {
-          n: "05",
-          title: "Content",
-          body: "Jede Nachricht für jeden Touchpoint wird aus der Intelligence geschrieben — mit Ton und Stil, abgestimmt auf die jeweilige empfangende Person. Ultra-spezifisch für dieses Unternehmen und diese Person. Nichts templated, nichts approximiert. Versandbereit.",
+          title: "Action",
+          body: "Ihr Vertriebsteam übernimmt, wenn menschliches Urteil am wichtigsten ist.",
+          variant: "team",
         },
       ],
-      flow: [
-        "Positionierung",
-        "Untersuchung",
-        "Intelligence",
-        "Trigger",
-        "Kampagnenstruktur",
-        "Content",
-      ],
-      closingLine:
-        "Sie geben MITCH keine Accounts vor. Sie zeigen ihm Ihr Unternehmen — und erhalten Accounts zurück, die bereits für Conviction vorbereitet sind.",
+      closingLead: "MITCH macht die ersten drei Stufen zur Infrastruktur.",
+      closingAccent: "Ihr Vertriebsteam macht daraus Umsatz.",
     },
     closing: {
       eyebrow: "04 — Jetzt starten",
-      headlineLead: "Ihr Team ist zum Abschließen gebaut.",
-      headlineAccent: "MITCH OS baut den Boden, auf dem es abschließt.",
-      body: "Buchen Sie ein Gespräch — wir zeigen Ihnen genau, wie das Ergebnis auf Ihren Accounts aussieht.",
+      headline: "Hören Sie auf zu wählen, welche Accounts Ihr Team Zeit hat zu prospecten.",
+      body: [
+        "Ihr gesamter adressierbarer Markt kann aktiv sein.",
+        "MITCH macht aus New-Logo-Akquise ein Software-Kosten-Thema statt eines Headcount-Problems.",
+      ],
+      closingLines: [
+        "Keine vierwöchige Kampagne.",
+        "Ein laufendes Programm für neues Geschäft.",
+      ],
       cta: "Gespräch buchen",
-      ctaNote: "Kein Pitch. Kein Druck. Nur Klarheit.",
+      ctaNote: "Sehen Sie, was MITCH in Ihrem Markt findet.",
     },
     footer: {
       tagline: "Die Pipeline, die sich selbst konvertiert. Ein MITCH-Unternehmen.",
