@@ -43,6 +43,10 @@ export const Route = createRootRoute({
       },
       {
         rel: "stylesheet",
+        href: "/mitch-theme.css",
+      },
+      {
+        rel: "stylesheet",
         href: "https://assets.calendly.com/assets/external/widget.css",
       },
     ],
