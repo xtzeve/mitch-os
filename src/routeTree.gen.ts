@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LegalNoticeRouteImport } from './routes/legal-notice'
+import { Route as IntroRouteImport } from './routes/intro'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeIndexRouteImport } from './routes/de/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as DeIntroRouteImport } from './routes/de/intro'
 import { Route as DeSlugRouteImport } from './routes/de/$slug'
 import { Route as ApiVisitRouteImport } from './routes/api/visit'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
@@ -35,6 +37,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const LegalNoticeRoute = LegalNoticeRouteImport.update({
   id: '/legal-notice',
   path: '/legal-notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntroRoute = IntroRouteImport.update({
+  id: '/intro',
+  path: '/intro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugRoute = SlugRouteImport.update({
@@ -61,6 +68,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const DeIntroRoute = DeIntroRouteImport.update({
+  id: '/de/intro',
+  path: '/de/intro',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DeSlugRoute = DeSlugRouteImport.update({
   id: '/de/$slug',
@@ -117,11 +129,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/$slug': typeof SlugRoute
+  '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
+  '/de/intro': typeof DeIntroRoute
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
@@ -135,11 +149,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
+  '/de/intro': typeof DeIntroRoute
   '/admin': typeof AdminIndexRoute
   '/de': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
@@ -155,11 +171,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/$slug': typeof SlugRoute
+  '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
   '/de/$slug': typeof DeSlugRoute
+  '/de/intro': typeof DeIntroRoute
   '/admin/': typeof AdminIndexRoute
   '/de/': typeof DeIndexRoute
   '/admin/pages/$pageId': typeof AdminPagesPageIdRoute
@@ -176,11 +194,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/$slug'
+    | '/intro'
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
     | '/de/$slug'
+    | '/de/intro'
     | '/admin/'
     | '/de/'
     | '/admin/pages/$pageId'
@@ -194,11 +214,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/intro'
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
     | '/de/$slug'
+    | '/de/intro'
     | '/admin'
     | '/de'
     | '/admin/pages/$pageId'
@@ -213,11 +235,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/$slug'
+    | '/intro'
     | '/legal-notice'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
     | '/de/$slug'
+    | '/de/intro'
     | '/admin/'
     | '/de/'
     | '/admin/pages/$pageId'
@@ -233,10 +257,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   SlugRoute: typeof SlugRoute
+  IntroRoute: typeof IntroRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ApiVisitRoute: typeof ApiVisitRoute
   DeSlugRoute: typeof DeSlugRoute
+  DeIntroRoute: typeof DeIntroRoute
   DeIndexRoute: typeof DeIndexRoute
 }
 
@@ -254,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/legal-notice'
       fullPath: '/legal-notice'
       preLoaderRoute: typeof LegalNoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intro': {
+      id: '/intro'
+      path: '/intro'
+      fullPath: '/intro'
+      preLoaderRoute: typeof IntroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug': {
@@ -290,6 +323,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/de/intro': {
+      id: '/de/intro'
+      path: '/de/intro'
+      fullPath: '/de/intro'
+      preLoaderRoute: typeof DeIntroRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/de/$slug': {
       id: '/de/$slug'
@@ -396,10 +436,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   SlugRoute: SlugRoute,
+  IntroRoute: IntroRoute,
   LegalNoticeRoute: LegalNoticeRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ApiVisitRoute: ApiVisitRoute,
   DeSlugRoute: DeSlugRoute,
+  DeIntroRoute: DeIntroRoute,
   DeIndexRoute: DeIndexRoute,
 }
 export const routeTree = rootRouteImport
