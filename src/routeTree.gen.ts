@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as PatrickkrellRouteImport } from './routes/patrickkrell'
 import { Route as LegalNoticeRouteImport } from './routes/legal-notice'
 import { Route as IntroRouteImport } from './routes/intro'
 import { Route as SlugRouteImport } from './routes/$slug'
@@ -32,6 +33,11 @@ import { Route as AdminPagesPageIdRouteImport } from './routes/admin/pages/$page
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatrickkrellRoute = PatrickkrellRouteImport.update({
+  id: '/patrickkrell',
+  path: '/patrickkrell',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalNoticeRoute = LegalNoticeRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
+  '/patrickkrell': typeof PatrickkrellRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
+  '/patrickkrell': typeof PatrickkrellRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
+  '/patrickkrell': typeof PatrickkrellRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/visit': typeof ApiVisitRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/intro'
     | '/legal-notice'
+    | '/patrickkrell'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/intro'
     | '/legal-notice'
+    | '/patrickkrell'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/intro'
     | '/legal-notice'
+    | '/patrickkrell'
     | '/privacy-policy'
     | '/admin/login'
     | '/api/visit'
@@ -259,6 +271,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   IntroRoute: typeof IntroRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
+  PatrickkrellRoute: typeof PatrickkrellRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ApiVisitRoute: typeof ApiVisitRoute
   DeSlugRoute: typeof DeSlugRoute
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patrickkrell': {
+      id: '/patrickkrell'
+      path: '/patrickkrell'
+      fullPath: '/patrickkrell'
+      preLoaderRoute: typeof PatrickkrellRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal-notice': {
@@ -438,6 +458,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   IntroRoute: IntroRoute,
   LegalNoticeRoute: LegalNoticeRoute,
+  PatrickkrellRoute: PatrickkrellRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ApiVisitRoute: ApiVisitRoute,
   DeSlugRoute: DeSlugRoute,
