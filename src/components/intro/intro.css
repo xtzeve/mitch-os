@@ -400,7 +400,7 @@
 
 /* ---------- Presentation ---------- */
 
-.stage{--ease:cubic-bezier(.65,0,.35,1);--out:cubic-bezier(.16,1,.3,1);--fd:'Barlow Condensed','Arial Narrow',sans-serif;--fm:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:18px;line-height:1.5;outline:none;background-image:radial-gradient(900px 520px at 4% -12%,rgba(226,86,28,0.12),transparent 62%),radial-gradient(760px 520px at 104% 114%,rgba(226,86,28,0.06),transparent 60%)}
+.stage{--ease:cubic-bezier(.65,0,.35,1);--out:cubic-bezier(.16,1,.3,1);--fd:'Barlow Condensed','Arial Narrow',sans-serif;--fm:'IBM Plex Mono',ui-monospace,Menlo,monospace;--fb:'IBM Plex Sans',system-ui,-apple-system,sans-serif;font-size:18px;line-height:1.5;outline:none;background-image:radial-gradient(900px 520px at 4% -12%,rgba(226,86,28,0.12),transparent 62%),radial-gradient(760px 520px at 104% 114%,rgba(226,86,28,0.06),transparent 60%)}
 .stage *,.stage *::before,.stage *::after{box-sizing:border-box}
 
 @keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
@@ -451,7 +451,7 @@
 .wtg{position:absolute;left:0;top:0;width:1600px;height:900px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .wtl{margin:0;font-size:44px;line-height:1.3;font-weight:500;color:#F4F0E8;opacity:0}
 .wtl2{margin-top:8px}
-.wtq{margin:56px 0 0;font-family:var(--fd);font-weight:800;font-size:76px;line-height:1;letter-spacing:.005em;text-transform:uppercase;color:#E2561C;opacity:0}
+.wtq{margin:56px 0 0;font-family:var(--fd);font-weight:800;font-size:76px;line-height:1;letter-spacing:.005em;text-transform:uppercase;color:#E2561C;opacity:0;display:none}
 .wel.on .wtl1{animation:wrise .9s var(--out) .4s both,wout .6s ease 6.6s forwards}
 .wel.on .wtl2{animation:wrise .9s var(--out) 2s both,wout .6s ease 6.6s forwards}
 .wel.on .wtq{animation:wrise .9s var(--out) 3.6s both,wout .6s ease 6.6s forwards}
@@ -467,8 +467,11 @@
 .tth em{font-style:normal;color:#E2561C}
 .ttl.on .tlg{animation:logoIn 1.1s var(--out) .45s both}
 .ttl.on .tth{animation:wrise .9s var(--out) 1s both}
+.ttsub{margin:-28px 0 0;font-size:30px;line-height:1.35;color:#CFCAC0;text-align:center;opacity:0}
+.ttl.on .ttsub{animation:wrise .9s var(--out) 1.6s both}
 .ttl.on.wm .tlg{animation-delay:7.3s}
 .ttl.on.wm .tth{animation-delay:8.5s}
+.ttl.on.wm .ttsub{animation-delay:9.1s}
 @keyframes logoIn{from{opacity:0;transform:translateY(24px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
 @keyframes wlMove{from{opacity:1;transform:none}to{opacity:1;transform:translate(-459px,-348px) scale(.25)}}
 @keyframes wfade{from{opacity:1}to{opacity:0}}
@@ -1019,6 +1022,8 @@
 .nl .w{display:inline-block}
 .nl .o{color:#E2561C}
 .nsub{margin:22px 0 0;font-size:30px;line-height:1.35;color:#CFCAC0}
+.nsub.nq{margin-top:12px;font-size:32px;line-height:1.3;color:#F4F0E8}
+.nl .w.nsdr{font-family:var(--fb,inherit);font-weight:400;font-size:34px;letter-spacing:0;text-transform:none;color:#CFCAC0;text-shadow:none}
 .ns.on.late .w{animation:wIn .8s var(--out) both;animation-delay:calc(.6s + var(--i) * 55ms)}
 .ns.on.late .w.o{animation:wIn .8s var(--out) both,oPop .7s var(--out) forwards;animation-delay:calc(.6s + var(--i) * 55ms),calc(1.15s + var(--n) * 55ms)}
 .ns.on.late .nsub{animation:rise .8s var(--out) both;animation-delay:var(--sd)}
@@ -1026,7 +1031,7 @@
 @keyframes oPop{0%{transform:none;text-shadow:0 0 0 rgba(226,86,28,0)}40%{transform:scale(1.1);text-shadow:0 0 44px rgba(226,86,28,.75)}100%{transform:none;text-shadow:0 0 0 rgba(226,86,28,0)}}
 
 /* field: your market, then every one of them */
-.nfield{position:absolute;left:120px;top:488px;width:1360px;display:grid;grid-template-columns:repeat(40,14px);justify-content:space-between;row-gap:10px;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s;pointer-events:none}
+.nfield{position:absolute;left:120px;top:530px;width:1360px;display:grid;grid-template-columns:repeat(40,14px);justify-content:space-between;row-gap:10px;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s;pointer-events:none}
 .nfield.f1,.nfield.f2{opacity:1;visibility:visible;transition:none}
 .ndt{display:block;width:14px;height:14px;border-radius:50%;border:2px solid #5E5B56;background:rgba(143,139,131,.1)}
 .nfield .ndt.k,.nfield.f2 .ndt{background:#E2561C;border-color:#E2561C}
@@ -1246,46 +1251,54 @@
 .ns.on.late .nch.m{animation:mZoom .8s var(--out) 4.3s both,cardRun 1s ease 4.9s both}
 @keyframes mZoom{0%{opacity:0;transform:scale(.8)}60%{opacity:1;transform:scale(1.07)}100%{opacity:1;transform:none}}
 /* n8 compared with the alternatives */
-@property --e1{syntax:'<integer>';inherits:false;initial-value:30}
-@property --e2{syntax:'<integer>';inherits:false;initial-value:5}
+@property --e1{syntax:'<integer>';inherits:false;initial-value:1}
+@property --e2{syntax:'<integer>';inherits:false;initial-value:6}
 .nbars{position:absolute;left:120px;top:478px;width:1360px}
 .nbr{display:grid;grid-template-columns:330px 820px minmax(0,1fr);align-items:center;gap:24px;padding:20px 0;border-top:1px solid #2B2B30}
 .nbr.m{border-bottom:1px solid #2B2B30}
 .nbw{margin:0;font-family:var(--fd);font-weight:800;font-size:38px;line-height:1;text-transform:uppercase;color:#8F8B83}
 .nbr.m .nbw{color:#FF6B2C}
 .nbt{position:relative;display:block;height:44px}
-.nbt i{position:absolute;left:0;top:0;bottom:0;width:100%;background:#5E5B56;transform-origin:left}
-.nbr.m .nbt i{width:16.7%;background:#E2561C;box-shadow:0 0 26px rgba(226,86,28,.55)}
+.nbt i{position:absolute;left:0;top:0;bottom:0;width:16.7%;background:#5E5B56;transform-origin:left}
+.nbr.m .nbt i{width:100%;background:#E2561C;box-shadow:0 0 26px rgba(226,86,28,.55)}
 .nbv{font-family:var(--fd);font-weight:800;font-size:56px;line-height:1;color:#CFCAC0}
 .nbr.m .nbv{color:#FF6B2C}
 .nbv em{font-style:normal;font-size:28px}
-.nbv.ev1{counter-reset:ev1 var(--e1)}.nbv.ev1::before{content:"€" counter(ev1)}
-.nbv.ev2{counter-reset:ev2 var(--e2)}.nbv.ev2::before{content:"€" counter(ev2)}
+.nbv.ev1{counter-reset:ev1 var(--e1)}.nbv.ev1::before{content:counter(ev1) "\00D7"}
+.nbv.ev2{counter-reset:ev2 var(--e2)}.nbv.ev2::before{content:counter(ev2) "\00D7"}
 .nbx{margin:26px 0 0;font-family:var(--fd);font-weight:800;font-size:52px;line-height:1;text-transform:uppercase;color:#FF6B2C}
 .ncf{margin:16px 0 0;font-size:17px;line-height:1.4;color:#8F8B83}
-@keyframes eRoll1{from{--e1:0}to{--e1:30}}
-@keyframes eRoll2{from{--e2:0}to{--e2:5}}
+@keyframes eRoll1{from{--e1:0}to{--e1:1}}
+@keyframes eRoll2{from{--e2:0}to{--e2:6}}
 .ns.on.late .nbr{animation:rise .6s var(--out) both}
 .ns.on.late .nbr:first-child{animation-delay:2.1s}.ns.on.late .nbr.m{animation-delay:3.6s}
-.ns.on.late .nbt i{animation:draw 1.4s cubic-bezier(.2,.7,.2,1) 2.4s both}
-.ns.on.late .nbr.m .nbt i{animation:draw .6s cubic-bezier(.2,.7,.2,1) 3.9s both}
+.ns.on.late .nbt i{animation:draw .6s cubic-bezier(.2,.7,.2,1) 2.4s both}
+.ns.on.late .nbr.m .nbt i{animation:draw 1.4s cubic-bezier(.2,.7,.2,1) 3.9s both}
 .ns.on.late .nbv.ev1{animation:eRoll1 1.4s cubic-bezier(.2,.7,.2,1) 2.4s both}
 .ns.on.late .nbv.ev2{animation:eRoll2 .6s cubic-bezier(.2,.7,.2,1) 3.9s both}
 .ns.on.late .nbx{animation:mZoom .8s var(--out) 4.6s both}
 .ns.on.late .ncf{animation:fade .6s ease 5s both}
 /* close: the takeaway */
-.sme{top:196px;font-size:40px}
-.sme.s2{top:252px}
+.sme{top:150px;font-size:40px}
+.sme.s2{top:204px}
 .sm.on .sme.s2{animation-delay:1.3s}
 .sm.on .smh{animation-delay:2.1s}
-.smh{top:330px}
-.srec{position:absolute;left:200px;top:484px;width:1200px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;text-align:center}
+.smh{top:276px}
+.srec{position:absolute;left:160px;top:404px;width:1280px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;text-align:center}
 .srec div{border-top:3px solid #E2561C;padding-top:20px;opacity:0}
 .srec b{display:block;font-family:var(--fd);font-weight:800;font-size:38px;line-height:1.05;text-transform:uppercase;color:#F4F0E8}
 .srec span{display:block;margin-top:10px;font-size:21px;line-height:1.35;color:#CFCAC0}
 .sm.on .srec div{animation:rise .7s var(--out) both;animation-delay:calc(3.3s + var(--k) * .25s)}
-.cta2{top:690px}
-.sm.on .cta2{animation-delay:4.4s}
+.sproof,.sstart,.sbio{position:absolute;left:120px;width:1360px;margin:0;text-align:center;opacity:0}
+.sproof{top:612px;font-size:19px;line-height:1.4;color:#8F8B83}
+.sstart{top:652px;font-size:22px;line-height:1.4;color:#F4F0E8}
+.sstart b{color:#FF6B2C;font-family:var(--fd);font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.cta2{top:700px}
+.sbio{top:768px;font-size:18px;line-height:1.4;color:#CFCAC0}
+.sm.on .sproof{animation:rise .7s var(--out) both 4.1s}
+.sm.on .sstart{animation:rise .7s var(--out) both 4.4s}
+.sm.on .cta2{animation-delay:4.8s}
+.sm.on .sbio{animation:rise .7s var(--out) both 5.1s}
 .sxf{display:none}
 .sxf.settle~*:not(.loop),.sxf.settle~* *:not(.loop),.sxf.settle~*:not(.loop)::before,.sxf.settle~* *:not(.loop)::before,.sxf.settle~*:not(.loop)::after,.sxf.settle~* *:not(.loop)::after{animation-delay:0s !important;animation-duration:1ms !important;transition:none !important}
 .sxf.settle~.ex.on .loop,.sxf.settle~* .ex.on .loop{opacity:1 !important}
@@ -1297,8 +1310,8 @@
 .tm.auto{transform:translateY(-184px) scale(.42);color:#FF6B2C}
 .st.seq,.st.ho,.hd.seqout{opacity:0 !important;visibility:hidden !important}
 .sr,.cta2{opacity:1;visibility:visible}
-.ttl .tlg,.ttl .tth{opacity:1}
-.srec div{opacity:1}
+.ttl .tlg,.ttl .tth,.ttl .ttsub{opacity:1}
+.srec div,.sproof,.sstart,.sbio{opacity:1}
 .nx.wait::before,.nx.wait::after{display:none}
 }
 .lmg3 .lrl{grid-column:1}
@@ -1405,8 +1418,3 @@ html.intro-open,html.intro-open body{margin:0;overflow:hidden;background:#0A0A0B
 
 /* ---------- DE locale formatting (from the DE reference stylesheet) ---------- */
 .stage.de .ncn .many::before{content:counter(kk) ".000"}
-.stage.de .nbv.ev1::before{content:counter(ev1) " \20AC"}
-.stage.de .nbv.ev2::before{content:counter(ev2) " \20AC"}
-.stage.de .naist span{font-size:38px}
-.stage.de .lsb b{font-size:38px}
-.stage.de .nbr{grid-template-columns:300px 760px minmax(0,1fr)}

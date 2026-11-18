@@ -73,16 +73,30 @@ const NRINGS: { left: number; top: number }[] = [
 const cssVars = (vars: Record<string, string | number>) =>
   vars as CSSProperties;
 
-function NHead({ h, sub, sd }: { h: string; sub?: string; sd?: string }) {
+function NHead({
+  h,
+  sub,
+  sd,
+  questions,
+}: {
+  h: string;
+  sub?: string;
+  sd?: string;
+  questions?: { text: string; sd: string }[];
+}) {
   const words = parseHeadline(h);
+  /** Ref sets `--n` to the headline word count excluding `nsdr` asides (drives accent pop delay). */
+  const nCount = words.filter((w) => !w.nsdr).length;
   return (
-    <div className="nhd" style={cssVars({ "--n": words.length })}>
+    <div className="nhd" style={cssVars({ "--n": nCount })}>
       <h2 className="nl">
         {words.map((w, idx) => (
           <Fragment key={idx}>
             {idx > 0 ? " " : null}
             <span
-              className={w.accent ? "w o" : "w"}
+              className={
+                w.nsdr ? "w nsdr" : w.accent ? "w o" : "w"
+              }
               style={cssVars({ "--i": idx })}
             >
               {w.word}
@@ -90,7 +104,16 @@ function NHead({ h, sub, sd }: { h: string; sub?: string; sd?: string }) {
           </Fragment>
         ))}
       </h2>
-      {sub ? (
+      {questions?.map((q) => (
+        <p
+          key={q.text}
+          className="nsub nq"
+          style={cssVars({ "--sd": `${q.sd}s` })}
+        >
+          {q.text}
+        </p>
+      ))}
+      {!questions?.length && sub ? (
         <p className="nsub" style={cssVars({ "--sd": `${sd}s` })}>
           {sub}
         </p>
@@ -269,6 +292,7 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
               {copy.title.before}
               <em>{copy.title.em}</em>
             </h2>
+            <p className="ttsub">{copy.title.sub}</p>
           </div>
 
           {copy.chapters.map((title, idx) => (
@@ -284,7 +308,10 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
           </div>
 
           <section className={`ns ${v.ns.n1}`}>
-            <NHead {...sec.n1} />
+            <NHead
+              h={sec.n1.h}
+              questions={sec.n1.questions}
+            />
             <span className="nscan" />
           </section>
 
@@ -299,6 +326,22 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
             </span>
             <div className="nsteps">
               {sec.n3.steps.map(([num, title, text], k) => (
+                <div key={k} className="nstep" style={cssVars({ "--k": k })}>
+                  <b>{num}</b>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className={`ns ${v.ns.nex}`}>
+            <NHead h={sec.nex.h} />
+            <div
+              className="nsteps"
+              style={{ gridTemplateColumns: "1fr 1fr 1fr 2fr" }}
+            >
+              {sec.nex.steps.map(([num, title, text], k) => (
                 <div key={k} className="nstep" style={cssVars({ "--k": k })}>
                   <b>{num}</b>
                   <h3>{title}</h3>
@@ -479,9 +522,7 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
                 <span className="nbt">
                   <i />
                 </span>
-                <b className="nbv ev2">
-                  <em>{sec.n8.mitchSuffix}</em>
-                </b>
+                <b className="nbv ev2" />
               </div>
               <p className="nbx">{sec.n8.note}</p>
             </div>
@@ -499,6 +540,10 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
                 </div>
               ))}
             </div>
+            <p className="sproof">{sm.proof}</p>
+            <p className="sstart">
+              <b>{sm.startLead}</b> {sm.startRest}
+            </p>
             <div className="cta2">
               <a
                 className="btn primary"
@@ -511,6 +556,7 @@ function IntroDesktop({ locale }: { locale: IntroLocale }) {
               <span className="who">{sm.who}</span>
               <span className="sel">{sm.contact}</span>
             </div>
+            <p className="sbio">{sm.bio}</p>
           </div>
 
           <IntroNav copy={copy} v={v} />

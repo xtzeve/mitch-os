@@ -23,7 +23,13 @@ function AccentHeadline({ text }: { text: string }) {
       {words.map((w, idx) => (
         <Fragment key={idx}>
           {idx > 0 ? " " : null}
-          <span className={w.accent ? "im-o" : undefined}>{w.word}</span>
+          <span
+            className={
+              w.nsdr ? "im-nsdr" : w.accent ? "im-o" : undefined
+            }
+          >
+            {w.word}
+          </span>
         </Fragment>
       ))}
     </h2>
@@ -103,32 +109,34 @@ function PartBody({
 
   switch (sectionKey) {
     case "n1":
+      return (
+        <div className="im-slide">
+          <p className="im-ch">{chapterTitle}</p>
+          <AccentHeadline text={sec.n1.h} />
+          <ul className="im-qs">
+            {sec.n1.questions.map((q) => (
+              <li key={q.text}>{q.text}</li>
+            ))}
+          </ul>
+          <div className="im-dots" aria-hidden="true">
+            {Array.from({ length: 48 }, (_, i) => (
+              <i key={i} className={i % 7 === 0 ? "on" : undefined} />
+            ))}
+          </div>
+        </div>
+      );
     case "n2":
       return (
         <div className="im-slide">
           <p className="im-ch">{chapterTitle}</p>
-          <AccentHeadline text={sec[sectionKey].h} />
-          <p className="im-sub">{sec[sectionKey].sub}</p>
-          {/* n1 = sparse key dots; n2 = wave-fill all dots (desktop .nfield.f2) */}
-          <div
-            className={sectionKey === "n2" ? "im-dots wave" : "im-dots"}
-            aria-hidden="true"
-          >
+          <AccentHeadline text={sec.n2.h} />
+          <p className="im-sub">{sec.n2.sub}</p>
+          <div className="im-dots wave" aria-hidden="true">
             {Array.from({ length: 48 }, (_, i) => (
               <i
                 key={i}
-                className={
-                  sectionKey === "n2"
-                    ? "fill"
-                    : i % 7 === 0
-                      ? "on"
-                      : undefined
-                }
-                style={
-                  sectionKey === "n2"
-                    ? ({ "--i": i } as CSSProperties)
-                    : undefined
-                }
+                className="fill"
+                style={{ "--i": i } as CSSProperties}
               />
             ))}
           </div>
@@ -148,6 +156,22 @@ function PartBody({
                   <strong>{title}</strong>
                   <p>{text}</p>
                 </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "nex":
+      return (
+        <div className="im-slide">
+          <p className="im-ch">{chapterTitle}</p>
+          <AccentHeadline text={sec.nex.h} />
+          <ol className="im-steps im-example">
+            {sec.nex.steps.map(([label, title, text]) => (
+              <li key={label}>
+                <b>{label}</b>
+                <strong>{title}</strong>
+                <p>{text}</p>
               </li>
             ))}
           </ol>
@@ -259,15 +283,18 @@ function PartBody({
           <p className="im-sub">{sec.n8.sub}</p>
           <div className="im-bars">
             <div className="im-bar">
-              <span>{sec.n8.bars[0]}</span>
-              <i className="tall" />
+              <div className="im-bar-row">
+                <span>{sec.n8.bars[0]}</span>
+                <b>1×</b>
+              </div>
+              <i className="short" />
             </div>
             <div className="im-bar m">
-              <span>
-                {sec.n8.bars[1]}
-                <em>{sec.n8.mitchSuffix}</em>
-              </span>
-              <i className="short" />
+              <div className="im-bar-row">
+                <span>{sec.n8.bars[1]}</span>
+                <b>6×</b>
+              </div>
+              <i className="tall" />
             </div>
           </div>
           <p className="im-note">{sec.n8.note}</p>
@@ -340,12 +367,12 @@ export function IntroMobile({ locale }: { locale: IntroLocale }) {
           <div className="im-slide im-home">
             <p className="im-wel">{copy.welcome.l1}</p>
             <p className="im-wel">{copy.welcome.l2}</p>
-            <p className="im-q">{copy.welcome.q}</p>
             <img className="im-home-logo" src={LOGO_SRC} alt="" />
             <h1 className="im-title">
               {copy.title.before}
               <em>{copy.title.em}</em>
             </h1>
+            <p className="im-ttsub">{copy.title.sub}</p>
             <p className="im-by">{copy.label}</p>
           </div>
         ) : null}
@@ -367,6 +394,10 @@ export function IntroMobile({ locale }: { locale: IntroLocale }) {
                 </div>
               ))}
             </div>
+            <p className="im-proof">{sm.proof}</p>
+            <p className="im-start">
+              <b>{sm.startLead}</b> {sm.startRest}
+            </p>
             <a
               className="im-btn primary im-cta"
               href={sm.ctaHref}
@@ -377,6 +408,7 @@ export function IntroMobile({ locale }: { locale: IntroLocale }) {
             </a>
             <p className="im-who">{sm.who}</p>
             <p className="im-contact">{sm.contact}</p>
+            <p className="im-bio">{sm.bio}</p>
           </div>
         ) : null}
       </div>

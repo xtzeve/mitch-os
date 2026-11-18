@@ -3,7 +3,8 @@
  * Source: reference HTML bundles (template.html + app-logic.js). Do not edit wording here
  * without updating the reference decks.
  *
- * Headline strings mark accent (orange) word runs with `*`, e.g. "Your market is *thousands of companies* that ...".
+ * Headline strings mark accent (orange) word runs with `*`, e.g. "MITCH works *every one* of them."
+ * Optional `†plain†` marks a non-uppercase aside (class `nsdr`), e.g. †(sales development representative).†
  */
 
 export type IntroLocale = "en" | "de";
@@ -22,6 +23,7 @@ export type IntroSectionKey =
   | "n1"
   | "n2"
   | "n3"
+  | "nex"
   | "nai"
   | "n4"
   | "n5"
@@ -58,11 +60,15 @@ export type IntroCopy = {
     ariaRet: string;
   };
   welcome: { l1: string; l2: string; q: string };
-  title: { before: string; em: string };
+  title: { before: string; em: string; sub: string };
   sections: {
-    n1: Headline;
+    n1: Headline & { questions: { text: string; sd: string }[] };
     n2: Headline;
     n3: Headline & { steps: [string, string, string][] };
+    nex: {
+      h: string;
+      steps: [string, string, string][];
+    };
     nai: {
       h: string;
       kickerA: string;
@@ -82,7 +88,6 @@ export type IntroCopy = {
     n7: Headline & { compare: [string, string][] };
     n8: Headline & {
       bars: [string, string];
-      mitchSuffix: string;
       note: string;
     };
   };
@@ -91,15 +96,19 @@ export type IntroCopy = {
     eyebrow2: string;
     heading: string;
     recap: [string, string][];
+    proof: string;
+    startLead: string;
+    startRest: string;
     cta: string;
     ctaHref: string;
     who: string;
     contact: string;
+    bio: string;
   };
 };
 
 export type Headline = {
-  /** Headline with `*accent*` runs */
+  /** Headline with `*accent*` runs and optional `†nsdr†` */
   h: string;
   sub: string;
   /** Subline delay in seconds (CSS --sd) */
@@ -119,34 +128,11 @@ export const introCopyEN: IntroCopy = {
     "The difference",
   ],
   story: [
-    {
-      key: "n1",
-      ch: 1,
-      name: "Your market",
-      dl: [],
-      ms: 4300,
-    },
-    {
-      key: "n2",
-      ch: 1,
-      name: "The buying journey",
-      dl: [],
-      ms: 4100,
-    },
-    {
-      key: "n3",
-      ch: 2,
-      name: "The work of an SDR",
-      dl: [],
-      ms: 4500,
-    },
-    {
-      key: "nai",
-      ch: 2,
-      name: "AI as a component",
-      dl: [],
-      ms: 5000,
-    },
+    { key: "n1", ch: 1, name: "Four questions", dl: [], ms: 8000 },
+    { key: "n2", ch: 1, name: "The buying journey", dl: [], ms: 4100 },
+    { key: "n3", ch: 2, name: "The work of an SDR", dl: [], ms: 4500 },
+    { key: "nex", ch: 2, name: "An example", dl: [], ms: 5200 },
+    { key: "nai", ch: 2, name: "AI as a component", dl: [], ms: 5000 },
     {
       key: "n4",
       ch: 2,
@@ -161,13 +147,7 @@ export const introCopyEN: IntroCopy = {
       dl: [],
       ms: 4800,
     },
-    {
-      key: "n6",
-      ch: 3,
-      name: "Timing",
-      dl: [],
-      ms: 6400,
-    },
+    { key: "n6", ch: 3, name: "Timing", dl: [], ms: 6400 },
     {
       key: "n7",
       ch: 4,
@@ -175,13 +155,7 @@ export const introCopyEN: IntroCopy = {
       dl: [],
       ms: 5600,
     },
-    {
-      key: "n8",
-      ch: 4,
-      name: "What it costs",
-      dl: [],
-      ms: 5500,
-    },
+    { key: "n8", ch: 4, name: "What it costs", dl: [], ms: 5500 },
   ],
   openingLabel: "Opening",
   summaryLabel: "Back to the start",
@@ -207,12 +181,27 @@ export const introCopyEN: IntroCopy = {
   title: {
     before: "MITCH drives new business across your ",
     em: "entire market.",
+    sub: "For B2B companies that already work outbound.",
   },
   sections: {
     n1: {
-      h: "Your market is *thousands of companies* that fit what you sell.",
-      sub: "Nearly all of them have never heard from you.",
-      sd: "1.71",
+      h: "How many companies in your market could buy from you?",
+      sub: "",
+      sd: "0",
+      questions: [
+        {
+          text: "How many of them is someone working on right now?",
+          sd: "3.3",
+        },
+        {
+          text: "When did anyone last speak to the others?",
+          sd: "4.9",
+        },
+        {
+          text: "What is the plan for them for the rest of the year?",
+          sd: "6.5",
+        },
+      ],
     },
     n2: {
       h: "MITCH works *every one* of them.",
@@ -220,8 +209,8 @@ export const introCopyEN: IntroCopy = {
       sd: "1.43",
     },
     n3: {
-      h: "For each company, it does the work of *a good SDR.*",
-      sub: "An SDR (sales development representative) researches accounts and makes first contact.",
+      h: "For each company, he does the work of *a good SDR* †(sales development representative).†",
+      sub: "MITCH prepares every touch. Your team or CRM sends it.",
       sd: "1.71",
       steps: [
         ["01", "Research", "The company and its decision makers."],
@@ -229,17 +218,38 @@ export const introCopyEN: IntroCopy = {
         [
           "03",
           "Message",
-          "Draft copy, written for specified decision makers, in your voice.",
+          "Copy written for named decision makers, in your voice.",
         ],
         [
           "04",
           "Channel",
-          "Email, letter, LinkedIn, call preparation, etc. Sent through your CRM, automated if you wish.",
+          "Letter, LinkedIn, email, call preparation. Channels follow each country’s rules.",
+        ],
+      ],
+    },
+    nex: {
+      h: "An example: from trigger to *first message.*",
+      steps: [
+        ["Account", "Who", "Machine builder, 400 staff."],
+        [
+          "Trigger",
+          "What",
+          "Second plant announced. Production starts in Q2.",
+        ],
+        [
+          "Why now",
+          "When",
+          "Certifying a new line takes four to six months. The decision falls this quarter.",
+        ],
+        [
+          "First message · Head of Operations",
+          "How",
+          "“Your new plant starts production in Q2. Certifying a new line usually takes four to six months, so the decision falls this quarter. Worth 20 minutes to see how others keep that on schedule?”",
         ],
       ],
     },
     nai: {
-      h: "It is enterprise grade software that uses AI. *The AI decides nothing.*",
+      h: "He is enterprise grade software that uses AI. *The AI decides nothing.*",
       kickerA: "Set with you",
       a: ["Your market", "Your offer", "Your voice"],
       kickerB: "Run by a fixed process",
@@ -262,7 +272,7 @@ export const introCopyEN: IntroCopy = {
       ],
     },
     n5: {
-      h: "Then it keeps watching, and stays in touch *until they buy or say stop.*",
+      h: "Then he keeps watching, and stays in touch *until they buy or say stop.*",
       sub: "Ongoing, with the same discipline and quality every month.",
       sd: "1.87",
       planned: "Planned",
@@ -278,7 +288,7 @@ export const introCopyEN: IntroCopy = {
       box: "Your sales team",
     },
     n7: {
-      h: "This is work you would *never* do yourself.",
+      h: "The work is not optional. *How well it is done is.*",
       sub: "Every account, every month, until they buy or say stop.",
       sd: "1.54",
       compare: [
@@ -289,12 +299,11 @@ export const introCopyEN: IntroCopy = {
       ],
     },
     n8: {
-      h: "Compared with the alternatives, it costs *a fraction.*",
-      sub: "Per account, per month, for the same work.",
-      sd: "1.54",
-      bars: ["An SDR doing this work", "MITCH"],
-      mitchSuffix: " or less",
-      note: "One sixth of the cost, or less.",
+      h: "For the cost of one SDR, MITCH *works six times the volume.*",
+      sub: "He is software: no sick days, no ramp up, no turnover.",
+      sd: "1.7",
+      bars: ["One SDR", "MITCH"],
+      note: "Six times the volume, for the same cost.",
     },
   },
   summary: {
@@ -304,12 +313,18 @@ export const introCopyEN: IntroCopy = {
     recap: [
       ["Set up once", "Your market, your offer, your voice."],
       ["Every account, every month", "Until they buy or say stop."],
-      ["A fraction of the cost", "Compared with an SDR doing the same work."],
+      ["Six times the volume", "For the cost of one SDR."],
     ],
+    proof:
+      "In use with B2B firms in consulting, IT infrastructure, branding, suppliers to retail and others. Tens of thousands of accounts under watch.",
+    startLead: "Start small.",
+    startRest:
+      "100 accounts, three months, fixed price, credited in full if you continue. If it doesn’t pay off, you stop.",
     cta: "Book a call with me →",
     ctaHref: "https://calendar.app.google/Yq2mAJo4F361WknM8",
     who: "Vince Pearson",
     contact: "vince@mitch-os.com · +49 152 345 20 507",
+    bio: "30 years running and turning around businesses across Europe. Built MITCH because prospecting is either thorough or broad, never both.",
   },
 };
 
@@ -322,38 +337,15 @@ export const introCopyDE: IntroCopy = {
   chapters: [
     "Volle Abdeckung",
     "Ein SDR als Software",
-    "Es hört nie auf",
+    "Er hört nie auf",
     "Der Unterschied",
   ],
   story: [
-    {
-      key: "n1",
-      ch: 1,
-      name: "Ihr Markt",
-      dl: [],
-      ms: 4300,
-    },
-    {
-      key: "n2",
-      ch: 1,
-      name: "Der Kaufprozess",
-      dl: [],
-      ms: 4100,
-    },
-    {
-      key: "n3",
-      ch: 2,
-      name: "Die Arbeit eines SDR",
-      dl: [],
-      ms: 4500,
-    },
-    {
-      key: "nai",
-      ch: 2,
-      name: "KI als Komponente",
-      dl: [],
-      ms: 5000,
-    },
+    { key: "n1", ch: 1, name: "Vier Fragen", dl: [], ms: 8000 },
+    { key: "n2", ch: 1, name: "Der Kaufprozess", dl: [], ms: 4100 },
+    { key: "n3", ch: 2, name: "Die Arbeit eines SDR", dl: [], ms: 4500 },
+    { key: "nex", ch: 2, name: "Ein Beispiel", dl: [], ms: 5200 },
+    { key: "nai", ch: 2, name: "KI als Komponente", dl: [], ms: 5000 },
     {
       key: "n4",
       ch: 2,
@@ -368,13 +360,7 @@ export const introCopyDE: IntroCopy = {
       dl: [],
       ms: 4800,
     },
-    {
-      key: "n6",
-      ch: 3,
-      name: "Der Zeitpunkt",
-      dl: [],
-      ms: 6400,
-    },
+    { key: "n6", ch: 3, name: "Der Zeitpunkt", dl: [], ms: 6400 },
     {
       key: "n7",
       ch: 4,
@@ -382,13 +368,7 @@ export const introCopyDE: IntroCopy = {
       dl: [],
       ms: 5600,
     },
-    {
-      key: "n8",
-      ch: 4,
-      name: "Was es kostet",
-      dl: [],
-      ms: 5500,
-    },
+    { key: "n8", ch: 4, name: "Was es kostet", dl: [], ms: 5500 },
   ],
   openingLabel: "Einstieg",
   summaryLabel: "Zurück zum Anfang",
@@ -414,22 +394,37 @@ export const introCopyDE: IntroCopy = {
   title: {
     before: "MITCH bringt Neugeschäft aus Ihrem ",
     em: "gesamten Markt.",
+    sub: "Für B2B-Unternehmen, die bereits aktiv Outbound betreiben.",
   },
   sections: {
     n1: {
-      h: "Ihr Markt: *Tausende Unternehmen,* die zu Ihrem Angebot passen.",
-      sub: "Fast alle haben noch nie von Ihnen gehört.",
-      sd: "1.59",
+      h: "Wie viele Unternehmen in Ihrem Markt könnten bei Ihnen kaufen?",
+      sub: "",
+      sd: "0",
+      questions: [
+        {
+          text: "Wie viele davon bearbeitet gerade jemand?",
+          sd: "3.3",
+        },
+        {
+          text: "Wann hat zuletzt jemand mit den anderen gesprochen?",
+          sd: "4.9",
+        },
+        {
+          text: "Was ist der Plan für sie bis Jahresende?",
+          sd: "6.5",
+        },
+      ],
     },
     n2: {
       h: "MITCH bearbeitet *jedes einzelne* davon.",
       sub: "Jedes wird recherchiert, erhält eine eigene Kampagne mit gezielten Botschaften und bleibt im Blick.",
-      sd: "1.38",
+      sd: "1.43",
     },
     n3: {
-      h: "Für jedes Unternehmen leistet MITCH die Arbeit *eines guten SDR.*",
-      sub: "Ein SDR (Sales Development Representative) recherchiert Accounts und nimmt den Erstkontakt auf.",
-      sd: "1.65",
+      h: "Für jedes Unternehmen leistet er die Arbeit *eines guten SDR* †(Sales Development Representative).†",
+      sub: "MITCH bereitet jeden Kontakt vor. Ihr Team oder Ihr CRM verschickt ihn.",
+      sd: "1.71",
       steps: [
         ["01", "Recherche", "Das Unternehmen und seine Entscheider."],
         [
@@ -440,17 +435,38 @@ export const introCopyDE: IntroCopy = {
         [
           "03",
           "Nachricht",
-          "Textentwurf, geschrieben für festgelegte Entscheider, in Ihrem Ton.",
+          "Texte für benannte Entscheider, in Ihrem Ton.",
         ],
         [
           "04",
           "Kanal",
-          "E-Mail, Brief, LinkedIn, Anrufvorbereitung usw. Versand über Ihr CRM, auf Wunsch automatisiert.",
+          "Brief, LinkedIn, E-Mail, Anrufvorbereitung. Die Kanäle folgen den Regeln des jeweiligen Landes.",
+        ],
+      ],
+    },
+    nex: {
+      h: "Ein Beispiel: vom Anlass zur *ersten Nachricht.*",
+      steps: [
+        ["Account", "Wer", "Maschinenbauer, 400 Mitarbeiter."],
+        [
+          "Anlass",
+          "Was",
+          "Zweites Werk angekündigt. Produktionsstart im zweiten Quartal.",
+        ],
+        [
+          "Warum jetzt",
+          "Wann",
+          "Die Zertifizierung einer neuen Linie dauert vier bis sechs Monate. Die Entscheidung fällt in diesem Quartal.",
+        ],
+        [
+          "Erste Nachricht · Leitung Operations",
+          "Wie",
+          "„Ihr neues Werk startet im zweiten Quartal die Produktion. Die Zertifizierung einer neuen Linie dauert meist vier bis sechs Monate, die Entscheidung fällt also in diesem Quartal. Haben Sie 20 Minuten, um zu sehen, wie andere das im Zeitplan halten?“",
         ],
       ],
     },
     nai: {
-      h: "Es ist Unternehmenssoftware, die KI nutzt. *Die KI entscheidet nichts.*",
+      h: "Er ist Unternehmenssoftware, die KI nutzt. *Die KI entscheidet nichts.*",
       kickerA: "Mit Ihnen festgelegt",
       a: ["Ihr Markt", "Ihr Angebot", "Ihr Ton"],
       kickerB: "Von einem festen Prozess ausgeführt",
@@ -463,7 +479,7 @@ export const introCopyDE: IntroCopy = {
     n4: {
       h: "Account 20.000 bekommt *dieselbe Arbeit* wie Account 1.",
       sub: "Ein Prozess, mit derselben Disziplin in jeder Größenordnung.",
-      sd: "1.54",
+      sd: "1.59",
       label: "Account",
       ticks: ["1", "5.000", "10.000", "15.000", "20.000"],
       checks: [
@@ -473,9 +489,9 @@ export const introCopyDE: IntroCopy = {
       ],
     },
     n5: {
-      h: "Danach behält MITCH sie im Blick und bleibt in Kontakt, *bis sie kaufen oder Stopp sagen.*",
+      h: "Danach behält er sie im Blick und bleibt in Kontakt, *bis sie kaufen oder Stopp sagen.*",
       sub: "Fortlaufend, mit derselben Disziplin und Qualität in jedem Monat.",
-      sd: "1.98",
+      sd: "1.87",
       planned: "Geplant",
       signal: "Bei neuem Signal",
       buys: "Kauft",
@@ -489,9 +505,9 @@ export const introCopyDE: IntroCopy = {
       box: "Ihr Vertrieb",
     },
     n7: {
-      h: "Diese Arbeit würden Sie *nie* selbst machen.",
+      h: "Die Arbeit muss getan werden. *Entscheidend ist, wie gut.*",
       sub: "Jeder Account, jeden Monat, bis er kauft oder Stopp sagt.",
-      sd: "1.48",
+      sd: "1.54",
       compare: [
         ["Ihr Vertrieb", "Einige Accounts, dann fehlt die Zeit."],
         ["Eine Agentur", "Eine Vorlage, an alle verschickt."],
@@ -500,12 +516,11 @@ export const introCopyDE: IntroCopy = {
       ],
     },
     n8: {
-      h: "Im Vergleich zu den Alternativen kostet es *einen Bruchteil.*",
-      sub: "Pro Account und Monat, für dieselbe Arbeit.",
-      sd: "1.59",
+      h: "Für die Kosten eines SDR bearbeitet MITCH *das Sechsfache.*",
+      sub: "Er ist Software: keine Krankheitstage, keine Einarbeitung, keine Fluktuation.",
+      sd: "1.7",
       bars: ["Ein SDR", "MITCH"],
-      mitchSuffix: " oder weniger",
-      note: "Ein Sechstel der Kosten oder weniger.",
+      note: "Das Sechsfache, zu denselben Kosten.",
     },
   },
   summary: {
@@ -515,15 +530,18 @@ export const introCopyDE: IntroCopy = {
     recap: [
       ["Einmal eingerichtet", "Ihr Markt, Ihr Angebot, Ihr Ton."],
       ["Jeder Account, jeden Monat", "Bis sie kaufen oder Stopp sagen."],
-      [
-        "Ein Bruchteil der Kosten",
-        "Im Vergleich zu einem SDR für dieselbe Arbeit.",
-      ],
+      ["Das Sechsfache", "Zu den Kosten eines SDR."],
     ],
+    proof:
+      "Im Einsatz bei B2B-Unternehmen aus Beratung, IT-Infrastruktur, Branding, Handelszulieferung und mehr. Zehntausende Accounts im Blick.",
+    startLead: "Klein anfangen.",
+    startRest:
+      "100 Accounts, drei Monate, Festpreis, voll angerechnet, wenn Sie weitermachen. Lohnt es sich nicht, hören Sie auf.",
     cta: "Termin mit mir vereinbaren →",
     ctaHref: "https://calendar.app.google/Yq2mAJo4F361WknM8",
     who: "Vince Pearson",
     contact: "vince@mitch-os.com · +49 152 345 20 507",
+    bio: "30 Jahre Führung und Sanierung von Unternehmen in ganz Europa. MITCH entstand, weil Akquise sonst entweder gründlich oder breit ist, nie beides.",
   },
 };
 

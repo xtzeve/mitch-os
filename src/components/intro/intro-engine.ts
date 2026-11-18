@@ -249,23 +249,42 @@ export function usePresentation(copy: IntroCopy) {
 
 export type IntroPresentationView = ReturnType<typeof usePresentation>;
 
-/** Splits a headline into word spans (`*accent*` runs → accent). */
-export function parseHeadline(text: string): { word: string; accent: boolean }[] {
-  const out: { word: string; accent: boolean }[] = [];
-  let on = false;
-  for (const raw of text.split(" ")) {
-    let word = raw;
-    let ends = false;
-    if (word.startsWith("*")) {
-      on = true;
-      word = word.slice(1);
+export type HeadlineWord = {
+  word: string;
+  accent: boolean;
+  /** Non-uppercase aside (reference class `nsdr`) */
+  nsdr?: boolean;
+};
+
+/**
+ * Splits a headline into word spans.
+ * `*accent*` runs → orange; `†aside†` → nsdr (may contain spaces).
+ */
+export function parseHeadline(text: string): HeadlineWord[] {
+  const out: HeadlineWord[] = [];
+  const chunks = text.split(/(†[^†]+†)/);
+  for (const chunk of chunks) {
+    if (!chunk) continue;
+    if (chunk.startsWith("†") && chunk.endsWith("†")) {
+      out.push({ word: chunk.slice(1, -1), accent: false, nsdr: true });
+      continue;
     }
-    if (word.endsWith("*")) {
-      ends = true;
-      word = word.slice(0, -1);
+    let on = false;
+    for (const raw of chunk.split(" ")) {
+      if (!raw) continue;
+      let word = raw;
+      let ends = false;
+      if (word.startsWith("*")) {
+        on = true;
+        word = word.slice(1);
+      }
+      if (word.endsWith("*")) {
+        ends = true;
+        word = word.slice(0, -1);
+      }
+      out.push({ word, accent: on });
+      if (ends) on = false;
     }
-    out.push({ word, accent: on });
-    if (ends) on = false;
   }
   return out;
 }
