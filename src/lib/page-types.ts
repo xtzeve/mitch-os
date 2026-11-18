@@ -71,6 +71,7 @@ export const RESERVED_SLUGS = new Set([
   "de",
   "api",
   "assets",
+  "flight",
   "intro",
   "patrickkrell",
   "privacy-policy",

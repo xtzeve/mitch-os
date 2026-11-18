@@ -4,6 +4,12 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./src/worker.ts",
+  // Asset-first: public/flight/index.html is served at /flight/ without the SSR shell.
+  // /flight redirects to /flight/ via auto-trailing-slash HTML handling.
+  "assets": {
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash"
+  },
   "d1_databases": [
     {
       "binding": "DB",

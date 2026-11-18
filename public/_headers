@@ -1,0 +1,12 @@
+# Flight Control launcher — static assets only (no site shell).
+/flight/manifest.webmanifest
+  Content-Type: application/manifest+json
+
+/flight
+  X-Robots-Tag: noindex, nofollow
+
+/flight/
+  X-Robots-Tag: noindex, nofollow
+
+/flight/*
+  X-Robots-Tag: noindex, nofollow

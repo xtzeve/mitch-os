@@ -3,6 +3,8 @@
 export interface CloudflareEnv {
   DB: D1Database;
   SESSION_SECRET?: string;
+  /** Present when Wrangler assets.binding is configured (see wrangler.jsonc). */
+  ASSETS?: Fetcher;
 }
 
 interface EnvStorage {

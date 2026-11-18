@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Flight Control</title>
+<meta name="apple-mobile-web-app-title" content="Flight Control">
+<meta name="application-name" content="Flight Control">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="manifest" href="/flight/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="/flight/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/flight/favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/flight/apple-touch-icon.png">
+<script>
+  // Launched from the saved icon: go straight to Flight Control.
+  var FC = 'https://claude.ai/artifact/3L1keNdz8XHPyP7KPZv1x5';
+  if (/[?&]go=1(&|$)/.test(location.search)) { location.replace(FC); }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#0A0A0B; --panel:#131315; --line:#2B2B30; --fg:#F4F0E8; --soft:#CFCAC0; --muted:#8F8B83; --ember:#E2561C; --ember-hi:#FF6B2C;
+    --display:'Barlow Condensed','Arial Narrow',sans-serif; --body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg)}
+  body{font-family:var(--body);font-size:16px;line-height:1.55;min-height:100vh;min-height:100dvh;
+    background-image:radial-gradient(800px 480px at 10% -10%, rgba(226,86,28,.16), transparent 62%);
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .wrap{max-width:720px;margin:0 auto;padding-block:48px 64px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+  .logo{height:40px;width:auto;display:block;align-self:flex-start}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember);font-weight:600;margin:0}
+  h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(52px,12vw,96px);line-height:.92;margin:6px 0 0;letter-spacing:.005em}
+  .lede{margin:0;color:var(--soft);font-size:17px;max-width:52ch}
+  .open{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;background:var(--ember);color:var(--bg);text-decoration:none;font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.06em;text-transform:uppercase;padding:14px 28px;border-radius:2px}
+  .open:hover,.open:focus-visible{background:var(--ember-hi);outline:none}
+  .open:focus-visible{box-shadow:0 0 0 3px var(--fg)}
+  .save{border:1px solid var(--line);background:var(--panel);padding:20px 22px;display:grid;gap:14px}
+  .save h2{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:24px;letter-spacing:.02em;margin:0;line-height:1}
+  .dev{display:grid;grid-template-columns:110px minmax(0,1fr);gap:4px 16px;margin:0}
+  .dev dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);font-weight:600;padding-top:4px}
+  .dev dd{margin:0 0 10px;color:var(--soft);font-size:15px}
+  .dev b{color:var(--fg);font-weight:500}
+  .note{margin:0;color:var(--muted);font-size:14px}
+  @media (max-width:520px){.dev{grid-template-columns:1fr}.dev dd{margin-bottom:12px}}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <img class="logo" src="/flight/mitch-logo.png" alt="MITCH">
+    <div>
+      <p class="eyebrow">MITCH OS</p>
+      <h1>Flight Control</h1>
+    </div>
+    <p class="lede">The MITCH board for sales and marketing, product and admin.</p>
+    <a class="open" id="open" href="https://claude.ai/artifact/3L1keNdz8XHPyP7KPZv1x5">Open Flight Control <span aria-hidden="true">→</span></a>
+    <section class="save" aria-labelledby="save-h">
+      <h2 id="save-h">Save it as an app</h2>
+      <dl class="dev">
+        <dt>iPhone</dt><dd>In Safari, tap <b>Share</b>, then <b>Add to Home Screen</b>.</dd>
+        <dt>Android</dt><dd>In Chrome, tap the <b>menu</b>, then <b>Add to Home screen</b>.</dd>
+        <dt>Desktop</dt><dd>In Chrome, open the <b>menu</b>, then <b>Cast, save and share</b> › <b>Create shortcut</b>. In Edge, <b>Apps</b> › <b>Install this site as an app</b>.</dd>
+      </dl>
+      <p class="note">Flight Control opens on claude.ai. Sign in to Claude once on each device. Access is by invitation.</p>
+    </section>
+  </main>
+</body>
+</html>
