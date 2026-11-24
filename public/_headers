@@ -10,3 +10,10 @@
 
 /flight/*
   X-Robots-Tag: noindex, nofollow
+
+# Consider it intro — static HTML, keep out of search.
+/considerit
+  X-Robots-Tag: noindex, nofollow
+
+/considerit.html
+  X-Robots-Tag: noindex, nofollow

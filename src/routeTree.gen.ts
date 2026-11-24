@@ -14,6 +14,7 @@ import { Route as PatrickkrellRouteImport } from './routes/patrickkrell'
 import { Route as LegalNoticeRouteImport } from './routes/legal-notice'
 import { Route as IntroRouteImport } from './routes/intro'
 import { Route as FlightRouteImport } from './routes/flight'
+import { Route as ConsideritRouteImport } from './routes/considerit'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -54,6 +55,11 @@ const IntroRoute = IntroRouteImport.update({
 const FlightRoute = FlightRouteImport.update({
   id: '/flight',
   path: '/flight',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsideritRoute = ConsideritRouteImport.update({
+  id: '/considerit',
+  path: '/considerit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugRoute = SlugRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/$slug': typeof SlugRoute
+  '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/$slug': typeof SlugRoute
+  '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/$slug'
+    | '/considerit'
     | '/flight'
     | '/intro'
     | '/legal-notice'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/considerit'
     | '/flight'
     | '/intro'
     | '/legal-notice'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/$slug'
+    | '/considerit'
     | '/flight'
     | '/intro'
     | '/legal-notice'
@@ -281,6 +293,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   SlugRoute: typeof SlugRoute
+  ConsideritRoute: typeof ConsideritRoute
   FlightRoute: typeof FlightRoute
   IntroRoute: typeof IntroRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/flight'
       fullPath: '/flight'
       preLoaderRoute: typeof FlightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/considerit': {
+      id: '/considerit'
+      path: '/considerit'
+      fullPath: '/considerit'
+      preLoaderRoute: typeof ConsideritRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug': {
@@ -476,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   SlugRoute: SlugRoute,
+  ConsideritRoute: ConsideritRoute,
   FlightRoute: FlightRoute,
   IntroRoute: IntroRoute,
   LegalNoticeRoute: LegalNoticeRoute,
