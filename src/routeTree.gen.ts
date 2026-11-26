@@ -13,6 +13,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PatrickkrellRouteImport } from './routes/patrickkrell'
 import { Route as LegalNoticeRouteImport } from './routes/legal-notice'
 import { Route as IntroRouteImport } from './routes/intro'
+import { Route as FoerdermittelInsightsRouteImport } from './routes/foerdermittel-insights'
 import { Route as FlightRouteImport } from './routes/flight'
 import { Route as ConsideritRouteImport } from './routes/considerit'
 import { Route as SlugRouteImport } from './routes/$slug'
@@ -50,6 +51,11 @@ const LegalNoticeRoute = LegalNoticeRouteImport.update({
 const IntroRoute = IntroRouteImport.update({
   id: '/intro',
   path: '/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoerdermittelInsightsRoute = FoerdermittelInsightsRouteImport.update({
+  id: '/foerdermittel-insights',
+  path: '/foerdermittel-insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FlightRoute = FlightRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
+  '/foerdermittel-insights': typeof FoerdermittelInsightsRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/patrickkrell': typeof PatrickkrellRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
+  '/foerdermittel-insights': typeof FoerdermittelInsightsRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/patrickkrell': typeof PatrickkrellRoute
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/considerit': typeof ConsideritRoute
   '/flight': typeof FlightRoute
+  '/foerdermittel-insights': typeof FoerdermittelInsightsRoute
   '/intro': typeof IntroRoute
   '/legal-notice': typeof LegalNoticeRoute
   '/patrickkrell': typeof PatrickkrellRoute
@@ -223,6 +232,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/considerit'
     | '/flight'
+    | '/foerdermittel-insights'
     | '/intro'
     | '/legal-notice'
     | '/patrickkrell'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/considerit'
     | '/flight'
+    | '/foerdermittel-insights'
     | '/intro'
     | '/legal-notice'
     | '/patrickkrell'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/considerit'
     | '/flight'
+    | '/foerdermittel-insights'
     | '/intro'
     | '/legal-notice'
     | '/patrickkrell'
@@ -295,6 +307,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   ConsideritRoute: typeof ConsideritRoute
   FlightRoute: typeof FlightRoute
+  FoerdermittelInsightsRoute: typeof FoerdermittelInsightsRoute
   IntroRoute: typeof IntroRoute
   LegalNoticeRoute: typeof LegalNoticeRoute
   PatrickkrellRoute: typeof PatrickkrellRoute
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/intro'
       fullPath: '/intro'
       preLoaderRoute: typeof IntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foerdermittel-insights': {
+      id: '/foerdermittel-insights'
+      path: '/foerdermittel-insights'
+      fullPath: '/foerdermittel-insights'
+      preLoaderRoute: typeof FoerdermittelInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/flight': {
@@ -498,6 +518,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   ConsideritRoute: ConsideritRoute,
   FlightRoute: FlightRoute,
+  FoerdermittelInsightsRoute: FoerdermittelInsightsRoute,
   IntroRoute: IntroRoute,
   LegalNoticeRoute: LegalNoticeRoute,
   PatrickkrellRoute: PatrickkrellRoute,

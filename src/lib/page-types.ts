@@ -73,6 +73,7 @@ export const RESERVED_SLUGS = new Set([
   "assets",
   "considerit",
   "flight",
+  "foerdermittel-insights",
   "intro",
   "patrickkrell",
   "privacy-policy",

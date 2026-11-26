@@ -17,3 +17,10 @@
 
 /considerit.html
   X-Robots-Tag: noindex, nofollow
+
+# Fördermittel insights intro — static HTML, keep out of search.
+/foerdermittel-insights
+  X-Robots-Tag: noindex, nofollow
+
+/foerdermittel-insights.html
+  X-Robots-Tag: noindex, nofollow
